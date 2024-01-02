@@ -68,7 +68,8 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { setUser, setToken } = useStateContext();
   const [errorMessages, setInputErrorMessages] = useState({
-    title: "Error",
+    title: "",
+    image: "",
     email: "",
     password: "",
   });

@@ -246,11 +246,10 @@ const DragDropFile = ({
   };
 
   const handleFileChange = (selectedFiles) => {
+    setFiles(selectedFiles);
     if (onChange) {
-      onChange(multiple ? selectedFiles : selectedFiles[0]);
-      setFiles(selectedFiles);
-
       if (setInputError) {
+        onChange(multiple ? selectedFiles : selectedFiles[0]);
         setInputError((prevErrorMessages) => ({
           ...prevErrorMessages,
           [name]: "",
