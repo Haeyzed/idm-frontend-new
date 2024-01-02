@@ -90,7 +90,8 @@ const Register = () => {
   };
 
   const handleFileChange = (fieldName, selectedFiles) => {
-    console.log("Selected Files:", selectedFiles);
+    console.log("fieldName:", fieldName);
+    console.log("selectedFiles:", selectedFiles);
     setFormData((prevFormData) => ({
       ...prevFormData,
       [fieldName]: selectedFiles,
@@ -105,6 +106,7 @@ const Register = () => {
       setFiles(selectedFiles);
     }
   };
+  
 
   const next = () => {
     setCurrentStep(currentStep + 1);
@@ -132,7 +134,7 @@ const Register = () => {
         });
       } else if (files.length > 0) {
         formDataObject.append("image", files[0]);
-      }  
+      }
 
       const endpoint = "/auth/register";
       const response = await axiosClient.post(endpoint, formDataObject);

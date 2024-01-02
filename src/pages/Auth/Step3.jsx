@@ -5,13 +5,20 @@ import DragDropFile from "../../components/common/DragDropFile";
 import Form from "../../components/common/Form";
 import Input from "../../components/common/Input";
 const Step3 = (props) => {
-  const { formData, handleInputChange, handleFileChange, multiple, errors, next, back } =
-    props;
+  const {
+    formData,
+    handleInputChange,
+    handleFileChange,
+    multiple,
+    errors,
+    next,
+    back,
+  } = props;
   return (
     <Form>
       <DragDropFile
         name="image"
-        onChange={(selectedFiles) => handleFileChange("image", selectedFiles)}
+        onFilesSelected={(selectedFiles) => handleFileChange("image", selectedFiles)}
         multiple={multiple}
         accept="*/*"
         margin="0 0 5px 0"

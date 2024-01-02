@@ -30,15 +30,15 @@ const convertToSentenceCase = (str) => {
 const Submit = (props) => {
   const { data, back, handleSubmit } = props;
 
-  const listItems = Object.entries(data).map(([key, value]) => (
-    <StyledListItem key={key}>
-      <strong>{convertToSentenceCase(key)} :</strong> {value}
-    </StyledListItem>
-  ));
+//   const listItems = Object.entries(data).map(([key, value]) => (
+//     <StyledListItem key={key}>
+//       <strong>{convertToSentenceCase(key)} :</strong> {value}
+//     </StyledListItem>
+//   ));
 
   return (
     <SubmitContainer>
-      <StyledList>{listItems}</StyledList>
+      {/* <StyledList>{listItems}</StyledList> */}
       <Button type="submit" className="primary" margin="5px 0 0 0" onClick={handleSubmit }>
         Submit
       </Button>

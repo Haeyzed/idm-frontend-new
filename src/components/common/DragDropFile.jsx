@@ -13,16 +13,13 @@ const ShakeAnimation = css`
   animation: shake 0.5s;
 
   @keyframes shake {
-    0%,
-    100% {
+    0%, 100% {
       transform: translateX(0);
     }
-    20%,
-    60% {
+    20%, 60% {
       transform: translateX(-5px);
     }
-    40%,
-    80% {
+    40%, 80% {
       transform: translateX(5px);
     }
   }
@@ -181,11 +178,10 @@ const ErrorSpan = styled.span`
 const DragDropFile = ({
   name,
   label,
-  onChange,
   multiple,
+  onFilesSelected,
   accept,
   error,
-  setInputError,
   margin,
 }) => {
   const [files, setFiles] = useState([]);
@@ -245,30 +241,30 @@ const DragDropFile = ({
     }
   };
 
-  const handleFileChange = (selectedFiles) => {
-    setFiles(selectedFiles);
-    if (onChange) {
-      onChange(name, multiple ? selectedFiles : selectedFiles[0]);
-    }
-  };
-
   const handleDrop = (e) => {
     e.preventDefault();
     const newFiles = Array.from(e.dataTransfer.files);
-    const selectedFiles = multiple ? [...newFiles] : newFiles.slice(0, 1);
-    handleFileChange(selectedFiles);
+    handleFiles(newFiles);
+  };
+
+  const handleFileChange = (e) => {
+    const newFiles = Array.from(e.target.files);
+    handleFiles(newFiles);
+  };
+
+  const handleRemoveFile = (index) => {
+    setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+  };
+
+  const handleFiles = (newFiles) => {
+    setFiles(multiple ? [...files, ...newFiles] : [newFiles[0]]);
+    onFilesSelected(multiple ? [...files, ...newFiles] : [newFiles[0]]);
   };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" || e.key === " ") {
       fileInputRef.current.click();
     }
-  };
-
-  const handleRemoveFile = (index) => {
-    const updatedFiles = [...files];
-    updatedFiles.splice(index, 1);
-    handleFileChange(updatedFiles);
   };
 
   const handleClearFiles = () => {
@@ -293,7 +289,7 @@ const DragDropFile = ({
           ref={fileInputRef}
           type="file"
           style={{ display: "none" }}
-          onChange={(e) => handleFileChange(Array.from(e.target.files))}
+          onChange={handleFileChange}
           multiple={multiple}
           accept={accept}
           error={error}
@@ -365,7 +361,7 @@ const DragDropFile = ({
 DragDropFile.propTypes = {
   name: PropTypes.string,
   label: PropTypes.string,
-  onChange: PropTypes.func.isRequired,
+  onFilesSelected: PropTypes.func.isRequired,
   multiple: PropTypes.bool,
   margin: PropTypes.string,
   accept: PropTypes.string,
