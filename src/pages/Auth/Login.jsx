@@ -8,14 +8,10 @@ import GuestLayout from "../../components/Layouts/GuestLayout";
 import Button from "../../components/common/Button";
 import Card from "../../components/common/Card";
 import Checkbox from "../../components/common/Checkbox.jsx";
-import DragDropFile from "../../components/common/DragDropFile.jsx";
 import Form from "../../components/common/Form";
 import Input from "../../components/common/Input";
-import Textarea from "../../components/common/Textarea.jsx";
 import { useStateContext } from "../../components/context/ContextProvider.jsx";
 import { requestNotificationPermission } from "../../firebase/FCMUtils";
-import HorizontalLoadingSpinner from "../../components/common/HorizontalLoadingSpinner.jsx";
-import Select from "../../components/common/Select.jsx";
 
 const StyledTitle = styled.h1`
   font-size: 24px;
@@ -60,26 +56,22 @@ const ResetPassword = styled.span`
 `;
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [fcmToken, setFcmToken] = useState("");
-  const [textareaValue, setTextareaValue] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const { setUser, setToken } = useStateContext();
-  const [errorMessages, setInputErrorMessages] = useState({
-    title: "",
-    image: "",
+  const [errors, setErrors] = useState({});
+  const [formData, setFormData] = useState({
     email: "",
     password: "",
+    fcm_token: "",
+    remember: false,
   });
-  const navigate = useNavigate();
 
   useEffect(() => {
     const initializeFirebaseMessaging = async () => {
       try {
         const token = await requestNotificationPermission();
-        setFcmToken(token);
+        setFormData((prevFormData) => ({ ...prevFormData, fcm_token: token }));
       } catch (error) {
         console.error("Error initializing Firebase Messaging:", error);
       }
@@ -88,32 +80,30 @@ const Login = () => {
     initializeFirebaseMessaging();
   }, []);
 
-  const options = [
-    { value: "option1", label: "Option 1", icon: "😊" },
-    { value: "option2", label: "Option 2", icon: "😊" },
-  ];
+  const handleInputChange = (fieldName, value) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [fieldName]: value,
+    }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [fieldName]: "",
+    }));
+  };
 
-  const [selectedOption, setSelectedOption] = useState(null);
-
-  const handleChange = (selectedValue) => {
-    setSelectedOption(selectedValue);
-    console.log("Selected Option:", selectedValue);
+  const handleResetPassword = () => {
+    navigate("/reset-password", { state: formData.email });
   };
 
   const handleRegister = () => {
     navigate("/register");
   };
 
-  const handleFileChange = (file) => {
-    console.log("Selected File:", file);
-  };
-
-  const handleResetPassword = () => {
-    navigate("/reset-password", { state: { email } });
-  };
-
-  const handleRememberMeChange = () => {
-    setRememberMe(!rememberMe);
+  const handleCheckboxChange = (fieldName, checked) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [fieldName]: checked,
+    }));
   };
 
   const handleLogin = async (event) => {
@@ -123,36 +113,26 @@ const Login = () => {
       setIsLoading(true);
 
       const endpoint = "/auth/login";
-      const data = {
-        email,
-        password,
-        fcm_token: fcmToken,
-        remember: rememberMe,
-      };
-
-      const response = await axiosClient.post(endpoint, data);
+      const response = await axiosClient.post(endpoint, formData);
 
       setUser(response.data.data);
       setToken(response.data.access_token);
-      setEmail("");
-      setPassword("");
-      setRememberMe(false);
-      setIsLoading(false);
+      setFormData({
+        email: "",
+        password: "",
+        remember: false,
+        fcm_token: "",
+      });
     } catch (error) {
       if (error.response?.status === 422) {
         const { errors } = error.response.data;
 
-        const newErrorMessages = { ...errorMessages };
-
-        Object.keys(errors).forEach((fieldName) => {
-          if (Array.isArray(errors[fieldName])) {
-            newErrorMessages[fieldName] = errors[fieldName].join("\n");
-          } else {
-            newErrorMessages[fieldName] = errors[fieldName];
-          }
+        const stringErrors = {};
+        Object.keys(errors).forEach((key) => {
+          stringErrors[key] = errors[key].join("\n");
         });
 
-        setInputErrorMessages(newErrorMessages);
+        setErrors(stringErrors);
       } else if (error.response?.status === 401) {
         // Handle other cases as needed
       } else {
@@ -180,60 +160,35 @@ const Login = () => {
             lefticon={<FaEnvelope />}
             type="email"
             placeholder="Enter your email"
-            value={email}
-            onChange={(newValue) => setEmail(newValue)}
+            value={formData.email}
+            onChange={(fieldName, newValue) =>
+              handleInputChange(fieldName, newValue)
+            }
             margin="0 0 5px 0"
-            error={errorMessages.email}
-            setInputError={setInputErrorMessages}
+            error={errors.email}
           />
           <Input
             name="password"
             lefticon={<FaLock />}
             type="password"
-            placeholder="Enter password"
+            placeholder="Enter your password"
             showPasswordToggle
-            value={password}
-            onChange={(newValue) => setPassword(newValue)}
+            value={formData.password}
+            onChange={(fieldName, newValue) =>
+              handleInputChange(fieldName, newValue)
+            }
             margin="5px 0 5px 0"
-            error={errorMessages.password}
-            setInputError={setInputErrorMessages}
-          />
-          <Textarea
-            name="myTextarea"
-            placeholder="Enter your text here"
-            value={textareaValue}
-            onChange={(newValue) => setTextareaValue(newValue)}
-            margin="5px 0 5px 0"
-            error={errorMessages.textareaValue}
-            setInputError={setInputErrorMessages}
-          />
-          <Select
-            name="title"
-            placeHolder="Select an option"
-            lefticon={<FaLock />}
-            options={options}
-            multiple={false}
-            searchable={true}
-            onChange={handleChange}
-            align="left"
-            margin="5px 0 5px 0"
-            error={errorMessages.title}
-            setInputError={setInputErrorMessages}
-          />
-          <DragDropFile
-            name="image"
-            onChange={handleFileChange}
-            multiple={true}
-            accept="*/*"
-            margin="5px 0 5px 0"
-            error={errorMessages.image}
-            setInputError={setInputErrorMessages}
+            error={errors.password}
           />
           <CheckboxContainer>
             <Checkbox
-              checked={rememberMe}
-              onChange={handleRememberMeChange}
+              name="remember"
+              checked={formData.remember}
+              onChange={(fieldName, newValue) =>
+                handleCheckboxChange(fieldName, newValue)
+              }
               label="Remember me"
+              error={errors.remember}
             />
             <ResetPassword onClick={handleResetPassword}>
               Reset Password

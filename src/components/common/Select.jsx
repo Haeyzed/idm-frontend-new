@@ -343,7 +343,6 @@ const Select = ({
   align,
   margin,
   error,
-  setInputError,
   size,
   lefticon,
 }) => {
@@ -415,14 +414,7 @@ const Select = ({
     const newValue = removeOption(option);
     setSelectedValue(newValue);
     if (onChange) {
-      onChange(newValue);
-
-      if (setInputError) {
-        setInputError((prevErrorMessages) => ({
-          ...prevErrorMessages,
-          [name]: "",
-        }));
-      }
+      onChange(name, newValue);
     }
   };
 
@@ -441,14 +433,7 @@ const Select = ({
     }
     setSelectedValue(newValue);
     if (onChange) {
-      onChange(newValue);
-
-      if (setInputError) {
-        setInputError((prevErrorMessages) => ({
-          ...prevErrorMessages,
-          [name]: "",
-        }));
-      }
+      onChange(name, newValue);
     }
   };
 
@@ -459,7 +444,7 @@ const Select = ({
 
     if (allSelected) {
       setSelectedValue([]);
-      onChange([]);
+      onChange(name, []);
     } else {
       const allOptions = options.map((option) => ({
         value: option.value,
@@ -468,14 +453,7 @@ const Select = ({
       }));
       setSelectedValue(allOptions);
       if (onChange) {
-        onChange(allOptions);
-
-        if (setInputError) {
-          setInputError((prevErrorMessages) => ({
-            ...prevErrorMessages,
-            [name]: "",
-          }));
-        }
+        onChange(name, allOptions);
       }
     }
   };
@@ -510,13 +488,14 @@ const Select = ({
   return (
     <>
       {label && <Label>{label} :</Label>}
-      <StyledCustomDropdownContainer margin={margin} error={error}>
+      <StyledCustomDropdownContainer margin={margin} error={error} name={name}>
         {lefticon && <LeftIcon>{lefticon}</LeftIcon>}
         <StyledDropdownInput
           ref={inputRef}
           onClick={handleInputClick}
           size={size}
           lefticon={lefticon}
+          error={error}
           name={name}
         >
           <div
@@ -592,7 +571,6 @@ Select.propTypes = {
   align: PropTypes.string,
   margin: PropTypes.string,
   error: PropTypes.string,
-  setInputError: PropTypes.func,
   size: PropTypes.string,
   lefticon: PropTypes.element,
 };

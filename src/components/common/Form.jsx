@@ -14,7 +14,7 @@ const Form = ({ onSubmit, children }) => {
 };
 
 Form.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func,
   children: PropTypes.node.isRequired,
 };
 

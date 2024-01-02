@@ -1,11 +1,12 @@
-import React from 'react';
-import styled, { css } from 'styled-components';
+import PropTypes from "prop-types";
+import React from "react";
+import styled from "styled-components";
 
 const StyledCheckboxWrapper = styled.label`
   display: flex;
   align-items: center;
   cursor: pointer;
-  margin: ${(props) => props.margin || '0 0 0 0'};
+  margin: ${(props) => props.margin || "0 0 0 0"};
 `;
 
 const StyledCheckboxLabel = styled.span`
@@ -40,7 +41,7 @@ const StyledCheckboxIndicator = styled.span`
   }
 
   &::before {
-    content: '\u2713';
+    content: "\u2713";
     color: ${(props) => props.theme.checkboxCheckColor};
     font-size: 16px;
     position: absolute;
@@ -56,12 +57,47 @@ const StyledCheckboxIndicator = styled.span`
   }
 `;
 
-const Checkbox = ({ checked, onChange, label, margin }) => (
-  <StyledCheckboxWrapper margin={margin}>
-    <StyledCheckboxInput type="checkbox" checked={checked} onChange={onChange} />
-    <StyledCheckboxIndicator />
-    <StyledCheckboxLabel>{label}</StyledCheckboxLabel>
-  </StyledCheckboxWrapper>
-);
+const ErrorSpan = styled.span`
+  color: ${(props) => props.theme.errorColor};
+  display: block;
+  font-size: 12px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+`;
+
+const Checkbox = ({ checked, onChange, label, margin, name, error }) => {
+  const handleCheckboxChange = (e) => {
+    const checkValue = e.target.checked;
+    if (onChange) {
+      onChange(name, checkValue);
+    }
+  };
+
+  return (
+    <>
+      <StyledCheckboxWrapper margin={margin}>
+        <StyledCheckboxInput
+          name={name}
+          type="checkbox"
+          checked={checked}
+          onChange={handleCheckboxChange}
+          error={error}
+        />
+        <StyledCheckboxIndicator />
+        <StyledCheckboxLabel>{label}</StyledCheckboxLabel>
+      </StyledCheckboxWrapper>
+      {error && <ErrorSpan>{error}</ErrorSpan>}
+    </>
+  );
+};
+
+Checkbox.propTypes = {
+  name: PropTypes.string,
+  checked: PropTypes.bool.isRequired,
+  onChange: PropTypes.func.isRequired,
+  label: PropTypes.string.isRequired,
+  margin: PropTypes.string,
+  error: PropTypes.string,
+};
 
 export default Checkbox;

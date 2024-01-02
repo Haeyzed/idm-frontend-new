@@ -70,7 +70,7 @@ const Verify = () => {
   const [isSending, setIsSending] = useState(false);
   const [resendCountdown, setResendCountdown] = useState(30);
   const [isResendButtonDisabled, setIsResendButtonDisabled] = useState(false);
-  const [errorMessages, setInputErrorMessages] = useState({
+  const [formData, setFormData] = useState({
     otp: "",
   });
   const navigate = useNavigate();
@@ -127,17 +127,17 @@ const Verify = () => {
       if (error.response?.status === 422) {
         const { errors } = error.response.data;
 
-        const newErrorMessages = { ...errorMessages };
+        const newformData = { ...formData };
 
         Object.keys(errors).forEach((fieldName) => {
           if (Array.isArray(errors[fieldName])) {
-            newErrorMessages[fieldName] = errors[fieldName].join("\n");
+            newformData[fieldName] = errors[fieldName].join("\n");
           } else {
-            newErrorMessages[fieldName] = errors[fieldName];
+            newformData[fieldName] = errors[fieldName];
           }
         });
 
-        setInputErrorMessages(newErrorMessages);
+        setFormData(newformData);
       } else if (error.response?.status === 401) {
         // Handle other cases as needed
       } else {
@@ -163,16 +163,16 @@ const Verify = () => {
       if (error.response?.status === 422) {
         const { errors } = error.response.data;
 
-        const newErrorMessages = { ...errorMessages };
+        const newformData = { ...formData };
 
         Object.keys(errors).forEach((fieldName) => {
           if (Array.isArray(errors[fieldName])) {
-            newErrorMessages[fieldName] = errors[fieldName].join("\n");
+            newformData[fieldName] = errors[fieldName].join("\n");
           } else {
-            newErrorMessages[fieldName] = errors[fieldName];
+            newformData[fieldName] = errors[fieldName];
           }
         });
-        setInputErrorMessages(newErrorMessages);
+        setFormData(newformData);
       } else if (error.response?.status === 401) {
         // Handle other cases as needed
       } else {
@@ -200,8 +200,8 @@ const Verify = () => {
             value={otpValue}
             onChange={handleOtpChange}
             margin="5px 0 5px 0"
-            error={errorMessages.otp}
-            setInputError={setInputErrorMessages}
+            error={formData.otp}
+            setInputError={setFormData}
           />
           <CheckboxContainer>
             <ResetPassword

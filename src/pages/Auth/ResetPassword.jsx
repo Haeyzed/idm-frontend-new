@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { FaEnvelope } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import DarkLogoImage from "../../assets/images/logo-sm-dark.png";
-import LightLogoImage from "../../assets/images/logo-sm-light.png";
+import LogoImage from "../../assets/images/logo-sm-dark.png";
 import axiosClient from "../../axiosClient";
 import GuestLayout from "../../components/Layouts/GuestLayout";
 import Button from "../../components/common/Button";
 import Card from "../../components/common/Card";
 import Form from "../../components/common/Form";
 import Input from "../../components/common/Input";
+import { useStateContext } from "../../components/context/ContextProvider.jsx";
 
 const StyledTitle = styled.h1`
   font-size: 24px;
@@ -40,13 +40,25 @@ const StyledLogo = styled.img`
   display: block;
 `;
 
-const ResetPassword = ({ theme }) => {
-  const [email, setEmail] = useState("");
+const ResetPassword = () => {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessages, setInputErrorMessages] = useState({
+  const { setUser, setToken } = useStateContext();
+  const [errors, setErrors] = useState({});
+  const [formData, setFormData] = useState({
     email: "",
   });
-  const navigate = useNavigate();
+
+  const handleInputChange = (fieldName, value) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [fieldName]: value,
+    }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [fieldName]: "",
+    }));
+  };
 
   const handleLogin = () => {
     navigate("/login");
@@ -59,29 +71,23 @@ const ResetPassword = ({ theme }) => {
       setIsLoading(true);
 
       const endpoint = "/auth/reset-password";
-      const data = {
-        email,
-      };
+      const response = await axiosClient.post(endpoint, formData);
 
-      const response = await axiosClient.post(endpoint, data);
-
-      setEmail("");
-      setIsLoading(false);
+      setUser(response.data.data);
+      setToken(response.data.access_token);
+      setFormData({
+        email: "",
+      });
     } catch (error) {
       if (error.response?.status === 422) {
         const { errors } = error.response.data;
 
-        const newErrorMessages = { ...errorMessages };
-
-        Object.keys(errors).forEach((fieldName) => {
-          if (Array.isArray(errors[fieldName])) {
-            newErrorMessages[fieldName] = errors[fieldName].join("\n");
-          } else {
-            newErrorMessages[fieldName] = errors[fieldName];
-          }
+        const stringErrors = {};
+        Object.keys(errors).forEach((key) => {
+          stringErrors[key] = errors[key].join("\n");
         });
 
-        setInputErrorMessages(newErrorMessages);
+        setErrors(stringErrors);
       } else if (error.response?.status === 401) {
         // Handle other cases as needed
       } else {
@@ -95,7 +101,7 @@ const ResetPassword = ({ theme }) => {
   return (
     <GuestLayout>
       <Card width="100%" maxwidth="360px">
-        <StyledTitle>Reset Password</StyledTitle>
+      <StyledTitle>Reset Password</StyledTitle>
         <StyledSubtitle>
           Embark on the journey to regain control! 🚀
         </StyledSubtitle>
@@ -104,23 +110,21 @@ const ResetPassword = ({ theme }) => {
           instructions to reset your password. Swiftly reclaim access to your
           account. Your trust is our priority! Thank you for choosing us!
         </StyledDescription>
-        {/* <StyledLogo src={LogoImage} alt="Logo" /> */}
-        <StyledLogo
-          src={theme === "dark" ? LightLogoImage : DarkLogoImage}
-          alt="Logo"
-        />
+        <StyledLogo src={LogoImage} alt="Logo" />
         <Form onSubmit={handleResetPassword}>
           <Input
             name="email"
             lefticon={<FaEnvelope />}
             type="email"
             placeholder="Enter your email"
-            value={email}
-            onChange={(newValue) => setEmail(newValue)}
+            value={formData.email}
+            onChange={(fieldName, newValue) =>
+              handleInputChange(fieldName, newValue)
+            }
             margin="0 0 5px 0"
-            error={errorMessages.email}
-            setInputError={setInputErrorMessages}
+            error={errors.email}
           />
+          {/* <HorizontalLoadingSpinner /> */}
           <Button
             type="submit"
             className="primary"
@@ -130,14 +134,13 @@ const ResetPassword = ({ theme }) => {
             Reset Password
           </Button>
         </Form>
-
         <Button
           type="button"
           className="secondary"
           onClick={handleLogin}
           margin="5px 0 0 0"
         >
-          Back to Login
+          Login
         </Button>
       </Card>
     </GuestLayout>

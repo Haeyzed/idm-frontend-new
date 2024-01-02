@@ -7,13 +7,16 @@ const ShakeAnimation = css`
   animation: shake 0.5s;
 
   @keyframes shake {
-    0%, 100% {
+    0%,
+    100% {
       transform: translateX(0);
     }
-    20%, 60% {
+    20%,
+    60% {
       transform: translateX(-5px);
     }
-    40%, 80% {
+    40%,
+    80% {
       transform: translateX(5px);
     }
   }
@@ -59,21 +62,21 @@ const StyledInput = styled.input`
     props.size === "small" &&
     css`
       font-size: 12px;
-      padding: 8px 8px 8px ${(props) => (props.lefticon ? "26px" : "8px")};
+      padding: 8px ${(props) => (props.lefticon ? "26px" : "8px")} 8px ${(props) => (props.lefticon ? "26px" : "8px")};
     `}
 
   ${(props) =>
     props.size === "large" &&
     css`
       font-size: 18px;
-      padding: 18px 18px 18px ${(props) => (props.lefticon ? "38px" : "18px")};
+      padding: 18px  ${(props) => (props.lefticon ? "38px" : "18px")} 18px ${(props) => (props.lefticon ? "38px" : "18px")};
     `}
 
   ${(props) =>
     !props.size &&
     css`
       font-size: 14px;
-      padding: 13px 13px 13px ${(props) => (props.lefticon ? "33px" : "13px")};
+      padding: 13px ${(props) => (props.lefticon ? "33px" : "13px")} 13px ${(props) => (props.lefticon ? "33px" : "13px")};
     `}
     
   margin: ${(props) => props.margin || "0 0 0 0"};
@@ -85,7 +88,7 @@ const StyledInput = styled.input`
   color: ${(props) => props.theme.inputText};
   background-color: ${(props) => props.theme.inputBackground};
   transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-  
+
   ${(props) => props.error && ShakeAnimation}
 
   &:focus {
@@ -170,30 +173,20 @@ const Input = ({
   placeholder,
   value,
   onChange,
-  disabled,
-  error,
-  setInputError,
   type = "text",
+  error,
   margin,
+  lefticon,
+  showPasswordToggle,
   minLength,
   maxLength,
-  showPasswordToggle,
-  lefticon,
-  size,
-  ...rest
+  disabled,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
-
   const handleInputChange = (e) => {
+    const inputValue = e.target.value;
     if (onChange) {
-      onChange(e.target.value);
-
-      if (setInputError) {
-        setInputError((prevErrorMessages) => ({
-          ...prevErrorMessages,
-          [name]: "",
-        }));
-      }
+      onChange(name, inputValue);
     }
   };
 
@@ -203,7 +196,7 @@ const Input = ({
 
   return (
     <>
-      {label && <Label>{label} :</Label>}
+      {label && <Label htmlFor={name}>{label} :</Label>}
       <InputContainer>
         {lefticon && <LeftIcon>{lefticon}</LeftIcon>}
         <StyledInput
@@ -212,14 +205,12 @@ const Input = ({
           placeholder={placeholder}
           value={value}
           onChange={handleInputChange}
-          disabled={disabled}
+          error={error}
           margin={margin}
+          lefticon={lefticon}
           minLength={minLength}
           maxLength={maxLength}
-          lefticon={lefticon}
-          size={size}
-          error={error}
-          {...rest}
+          disabled={disabled}
         />
         {type === "password" && showPasswordToggle && (
           <PasswordToggle type="button" onClick={handleTogglePassword}>
@@ -243,15 +234,14 @@ Input.propTypes = {
   placeholder: PropTypes.string,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  disabled: PropTypes.bool,
   type: PropTypes.string,
+  error: PropTypes.string,
   margin: PropTypes.string,
+  lefticon: PropTypes.element,
+  showPasswordToggle: PropTypes.bool,
   minLength: PropTypes.number,
   maxLength: PropTypes.number,
-  showPasswordToggle: PropTypes.bool,
-  lefticon: PropTypes.element,
-  size: PropTypes.oneOf(["small", "large"]),
-  setInputError: PropTypes.func,
+  disabled: PropTypes.bool,
 };
 
 export default Input;
