@@ -268,8 +268,9 @@ const DragDropFile = ({
   };
 
   const handleClearFiles = () => {
-    handleFileChange([]);
-  };
+    setFiles([]);
+    onFilesSelected([]);F
+  };  
 
   return (
     <>

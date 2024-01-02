@@ -60,7 +60,6 @@ const Register = () => {
     state_id: "",
     city_id: "",
     gender: "",
-    image: "",
     password: "",
     password_confirmation: "",
   });
@@ -92,21 +91,31 @@ const Register = () => {
   const handleFileChange = (fieldName, selectedFiles) => {
     console.log("fieldName:", fieldName);
     console.log("selectedFiles:", selectedFiles);
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [fieldName]: selectedFiles,
-    }));
     setErrors((prevErrors) => ({
       ...prevErrors,
       [fieldName]: "",
     }));
+
     if (isMultiple) {
+      // For multiple file uploads, append each file with a unique key
+      selectedFiles.forEach((file, index) => {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          [`${fieldName}_${index + 1}`]: file,
+        }));
+      });
+
       setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
     } else {
+      // For single file upload, update the existing key
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [fieldName]: selectedFiles[0],
+      }));
+
       setFiles(selectedFiles);
     }
   };
-  
 
   const next = () => {
     setCurrentStep(currentStep + 1);
@@ -128,13 +137,13 @@ const Register = () => {
         formDataObject.append(key, formData[key]);
       });
 
-      if (isMultiple) {
-        files.forEach((file, index) => {
-          formDataObject.append(`image_${index + 1}`, file);
-        });
-      } else if (files.length > 0) {
-        formDataObject.append("image", files[0]);
-      }
+      // if (isMultiple) {
+      //   files.forEach((file, index) => {
+      //     formDataObject.append(`image_${index + 1}`, file);
+      //   });
+      // } else if (files.length > 0) {
+      //   formDataObject.append("image", files[0]);
+      // }
 
       const endpoint = "/auth/register";
       const response = await axiosClient.post(endpoint, formDataObject);
