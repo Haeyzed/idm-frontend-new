@@ -9,6 +9,7 @@ import styled from "styled-components";
 import LogoImage from "../../assets/images/logo-sm-dark.png";
 import axiosClient from "../../axiosClient";
 import { useNavigate } from "react-router-dom";
+import { requestNotificationPermission } from "../../firebase/FCMUtils";
 
 const StyledTitle = styled.h1`
   font-size: 24px;
@@ -50,7 +51,7 @@ const Register = () => {
   const [files, setFiles] = useState([]);
   const [cityOptions, setCityOptions] = useState([]);
   const [isMultiple, setIsMultiple] = useState(false);
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     title: "",
     name: "",
     username: "",
@@ -60,9 +61,12 @@ const Register = () => {
     state_id: "",
     city_id: "",
     gender: "",
+    image: "",
     password: "",
     password_confirmation: "",
-  });
+    fcm_token: "",
+  };
+  const [formData, setFormData] = useState(initialFormData);
 
   const handleInputChange = (fieldName, value) => {
     setFormData((prevFormData) => ({
@@ -97,7 +101,6 @@ const Register = () => {
     }));
 
     if (isMultiple) {
-      // For multiple file uploads, append each file with a unique key
       selectedFiles.forEach((file, index) => {
         setFormData((prevFormData) => ({
           ...prevFormData,
@@ -107,7 +110,6 @@ const Register = () => {
 
       setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
     } else {
-      // For single file upload, update the existing key
       setFormData((prevFormData) => ({
         ...prevFormData,
         [fieldName]: selectedFiles[0],
@@ -137,34 +139,12 @@ const Register = () => {
         formDataObject.append(key, formData[key]);
       });
 
-      // if (isMultiple) {
-      //   files.forEach((file, index) => {
-      //     formDataObject.append(`image_${index + 1}`, file);
-      //   });
-      // } else if (files.length > 0) {
-      //   formDataObject.append("image", files[0]);
-      // }
-
       const endpoint = "/auth/register";
       const response = await axiosClient.post(endpoint, formDataObject);
 
       setUser(response.data.data);
       setToken(response.data.access_token);
-
-      setFormData({
-        title: "",
-        name: "",
-        username: "",
-        email: "",
-        phone_number: "",
-        country_id: "",
-        state_id: "",
-        city_id: "",
-        gender: "",
-        image: "",
-        password: "",
-        password_confirmation: "",
-      });
+      setFormData(initialFormData);
     } catch (error) {
       if (error.response?.status === 422) {
         const { errors } = error.response.data;
@@ -204,6 +184,16 @@ const Register = () => {
       }
     };
 
+    const initializeFirebaseMessaging = async () => {
+      try {
+        const token = await requestNotificationPermission();
+        handleInputChange("fcm_token", token);
+      } catch (error) {
+        console.error("Error initializing Firebase Messaging:", error);
+      }
+    };
+
+    initializeFirebaseMessaging();
     fetchTitles();
     fetchCountries();
   }, []);
