@@ -47,7 +47,9 @@ const Register = () => {
   const [titles, setTitles] = useState([]);
   const [countries, setCountries] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);
+  const [files, setFiles] = useState([]);
   const [cityOptions, setCityOptions] = useState([]);
+  const [isMultiple, setIsMultiple] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     name: "",
@@ -87,8 +89,21 @@ const Register = () => {
     }));
   };
 
-  const handleFileChange = (file) => {
-    console.log("Selected File:", file);
+  const handleFileChange = (fieldName, selectedFiles) => {
+    console.log("Selected Files:", selectedFiles);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [fieldName]: selectedFiles,
+    }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [fieldName]: "",
+    }));
+    if (isMultiple) {
+      setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
+    } else {
+      setFiles(selectedFiles);
+    }
   };
 
   const next = () => {
@@ -105,11 +120,26 @@ const Register = () => {
     try {
       setIsLoading(true);
 
+      const formDataObject = new FormData();
+
+      Object.keys(formData).forEach((key) => {
+        formDataObject.append(key, formData[key]);
+      });
+
+      if (isMultiple) {
+        files.forEach((file, index) => {
+          formDataObject.append(`image_${index + 1}`, file);
+        });
+      } else if (files.length > 0) {
+        formDataObject.append("image", files[0]);
+      }  
+
       const endpoint = "/auth/register";
-      const response = await axiosClient.post(endpoint, formData);
+      const response = await axiosClient.post(endpoint, formDataObject);
 
       setUser(response.data.data);
       setToken(response.data.access_token);
+
       setFormData({
         title: "",
         name: "",
@@ -168,7 +198,6 @@ const Register = () => {
   }, []);
 
   useEffect(() => {
-    // Fetch states based on the selected country
     const fetchStates = async () => {
       if (formData.country_id) {
         try {
@@ -186,7 +215,6 @@ const Register = () => {
   }, [formData.country_id]);
 
   useEffect(() => {
-    // Fetch cities based on the selected state
     const fetchCities = async () => {
       if (formData.state_id) {
         try {
@@ -265,6 +293,7 @@ const Register = () => {
                 <Step3
                   formData={formData}
                   handleInputChange={handleInputChange}
+                  multiple={isMultiple}
                   handleFileChange={handleFileChange}
                   errors={errors}
                   next={next}
