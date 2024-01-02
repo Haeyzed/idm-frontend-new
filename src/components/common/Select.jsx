@@ -268,6 +268,13 @@ const StyledDropdownTagItem = styled.div`
   align-items: center;
 `;
 
+const StyledDropdownSingleItem = styled.div`
+  color: ${(props) => props.theme.inputText};
+  padding: 2px 4px;
+  display: flex;
+  align-items: center;
+`;
+
 const StyledDropdownTagClose = styled.span`
   display: flex;
   align-items: center;
@@ -392,10 +399,10 @@ const Select = ({
     }
 
     return (
-      <StyledDropdownTagItem>
+      <StyledDropdownSingleItem>
         {selectedValue.icon && selectedValue.icon}
         {selectedValue.label}
-      </StyledDropdownTagItem>
+      </StyledDropdownSingleItem>
     );
   };
 

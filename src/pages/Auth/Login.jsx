@@ -211,7 +211,7 @@ const Login = () => {
             placeHolder="Select an option"
             lefticon={<FaLock />}
             options={options}
-            multiple={true}
+            multiple={false}
             searchable={true}
             onChange={handleChange}
             align="left"
