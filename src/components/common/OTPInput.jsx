@@ -151,25 +151,17 @@ const OTPInput = ({
     if (onChange) {
       const newValue = e.target.value.slice(0, 1);
       onChange(newValue, index);
-
-      if (setInputError) {
-        setInputError((prevErrorMessages) => ({
-          ...prevErrorMessages,
-          [name]: "",
-        }));
-      }
-
+  
       if (newValue !== "" && index < inputRefs.length - 1) {
-        inputRefs[index + 1].current.value = "";
         inputRefs[index + 1].current.focus();
       }
-
-      if (e.nativeEvent.inputType === "deleteContentBackward" && index > 0) {
-        inputRefs[index - 1].current.value = "";
+  
+      if (e.target.selectionStart === 0 && index > 0) {
         inputRefs[index - 1].current.focus();
       }
     }
   };
+  
 
   return (
     <>

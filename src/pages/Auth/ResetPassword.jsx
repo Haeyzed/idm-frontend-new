@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FaEnvelope } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import LogoImage from "../../assets/images/logo-sm-dark.png";
 import axiosClient from "../../axiosClient";
@@ -44,12 +44,13 @@ const StyledLogo = styled.img`
 
 const ResetPassword = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const { setUser, setToken } = useStateContext();
   const [errors, setErrors] = useState({});
   const storedValue = localStorage.getItem("theme");
   const initialFormData = {
-    email: "",
+    email: location?.state?.email || "",
   };
   const [formData, setFormData] = useState(initialFormData);
 

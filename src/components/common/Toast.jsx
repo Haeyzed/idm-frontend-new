@@ -1,106 +1,89 @@
-// Toast.js
-import React, { useCallback, useEffect } from 'react';
-import styled, { keyframes } from 'styled-components';
+import React from 'react';
+import styled, { css } from 'styled-components';
+import { useTimeout } from '../../utils/useTimeout';
 
-const Container = styled.div`
-  font-size: 14px;
-  position: fixed;
-  z-index: 10;
-`;
-
-const Notification = styled.div`
-  margin-bottom: 1rem;
-  border-radius: 4px;
-  box-shadow: 0 0 10px #999;
-  color: #000;
-  opacity: 0.9;
-  transition: 0.3s ease;
-
-  &:hover {
-    box-shadow: 0 0 12px #fff;
-    opacity: 1;
-  }
-`;
-
-const ToastContainer = styled(Container)`
-  bottom: 1rem;
-  right: 1rem;
-  animation: ${keyframes`
-    from {
-      transform: translateX(100%);
-    }
-    to {
-      transform: translateX(0);
-    }
-  `} 0.7s;
-`;
-
-const ToastContent = styled.div`
-  height: 50px;
-  width: 365px;
-  color: #fff;
-  padding: 20px 15px 10px 10px;
+const ToastContainer = styled.div`
+  border: ${(props) => props.border || '2px solid transparent'};
+  border-radius: ${(props) => props.borderRadius || '10px'};
+  max-width: 480px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  margin-top: 16px;
   display: flex;
-  justify-content: space-between;
+  position: relative;
+  cursor: pointer;
+  z-index: 1000; /* Ensure the toast appears on top */
+  
+  ${(props) => {
+    switch (props.status) {
+      case 'success':
+        return css`
+          background-color: #4caf50; /* Green */
+          color: #fff;
+        `;
+      case 'error':
+        return css`
+          background-color: #f44336; /* Red */
+          color: #fff;
+        `;
+      case 'warning':
+        return css`
+          background-color: #ff9800; /* Orange */
+          color: #fff;
+        `;
+      case 'info':
+        return css`
+          background-color: #2196f3; /* Blue */
+          color: #fff;
+        `;
+      default:
+        return css`
+          background-color: ${props.backgroundColor || '#fafafa'};
+          color: ${props.textColor || 'inherit'};
+        `;
+    }
+  }};
+`;
+
+const ToastText = styled.div`
+  padding: 16px 24px;
+  line-height: 1.4;
 `;
 
 const CloseButton = styled.button`
-  background: none;
   border: none;
-  color: #fff;
-  opacity: 0.8;
-  cursor: pointer;
-`;
-
-const Title = styled.p`
-  font-weight: 700;
+  background-color: transparent;
   font-size: 16px;
-  text-align: left;
-  margin-top: 0;
-  margin-bottom: 6px;
-  width: 300px;
-  height: 18px;
+  margin-top: 8px;
+  margin-right: 8px;
+  cursor: pointer;
+  color: ${(props) => props.closeColor || 'inherit'};
 `;
 
-const Description = styled.p`
-  margin: 0;
-  text-align: left;
+const Icon = styled.div`
+  font-size: 24px;
+  margin-right: 16px;
+  color: ${(props) => props.iconColor || 'inherit'};
 `;
 
-const Toast = ({ toastlist, position, setList }) => {
-  const deleteToast = useCallback(
-    (id) => {
-      const toastListItem = toastlist.filter((e) => e.id !== id);
-      setList(toastListItem);
-    },
-    [toastlist, setList]
-  );
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (toastlist.length) {
-        deleteToast(toastlist[0].id);
-      }
-    }, 3000);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [toastlist, deleteToast]);
+const Toast = (props) => {
+  useTimeout(props.close, props.duration || 5000);
 
   return (
-    <ToastContainer>
-      {toastlist.map((toast, i) => (
-        <Notification key={i} style={{ backgroundColor: toast.backgroundColor }}>
-          <ToastContent>
-            <div>
-              <Title>{toast.title}</Title>
-              <Description>{toast.description}</Description>
-            </div>
-            <CloseButton onClick={() => deleteToast(toast.id)}>X</CloseButton>
-          </ToastContent>
-        </Notification>
-      ))}
+    <ToastContainer
+      status={props.status}
+      backgroundColor={props.backgroundColor}
+      border={props.border}
+      borderRadius={props.borderRadius}
+    >
+      {props.icon && <Icon iconColor={props.iconColor}>{props.icon}</Icon>}
+      <ToastText textColor={props.textColor}>{props.children}</ToastText>
+      {props.customCloseButton ? (
+        <div>{props.customCloseButton}</div>
+      ) : (
+        <div>
+          <CloseButton onClick={props.close}>x</CloseButton>
+        </div>
+      )}
     </ToastContainer>
   );
 };

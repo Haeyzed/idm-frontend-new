@@ -9,6 +9,13 @@ const StyledCheckboxWrapper = styled.label`
   margin: ${(props) => props.margin || "0 0 0 0"};
 `;
 
+const Label = styled.label`
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: ${(props) => props.theme.inputText};
+`;
+
 const StyledCheckboxLabel = styled.span`
   margin-left: 8px;
   font-family: inherit;
@@ -75,6 +82,7 @@ const Checkbox = ({ checked, onChange, label, margin, name, error }) => {
 
   return (
     <>
+      {/* {label && <Label htmlFor={name}>{label} :</Label>} */}
       <StyledCheckboxWrapper margin={margin}>
         <StyledCheckboxInput
           name={name}

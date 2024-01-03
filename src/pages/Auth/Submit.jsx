@@ -35,7 +35,7 @@ const convertToSentenceCase = (str) => {
 };
 
 const Submit = (props) => {
-  const { data, back, handleSubmit } = props;
+  const { data, back, handleSubmit, isLoading } = props;
   const renderValue = (value) => {
     if (value instanceof File) {
       return `File - ${value.name}`;
@@ -61,6 +61,7 @@ const Submit = (props) => {
         type="submit"
         className="primary"
         margin="5px 0 5px 0"
+        isloading={isLoading}
         onClick={handleSubmit}
       >
         Submit

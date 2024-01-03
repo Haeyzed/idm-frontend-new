@@ -1,14 +1,16 @@
 import React, { useState } from "react";
-import { FaLock } from "react-icons/fa";
+import { FaEnvelope } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import LogoImage from "../../assets/images/logo-sm-dark.png";
 import axiosClient from "../../axiosClient";
 import GuestLayout from "../../components/Layouts/GuestLayout";
 import Button from "../../components/common/Button";
 import Card from "../../components/common/Card";
 import Form from "../../components/common/Form";
-import OTPInput from "../../components/common/OTPInput.jsx";
+import Input from "../../components/common/Input";
+import OTPInput from "../../components/common/OTPInput";
+import LogoLightImage from "../../assets/images/logo-sm-dark.png";
+import LogoDarkImage from "../../assets/images/logo-sm-light.png";
 import { useStateContext } from "../../components/context/ContextProvider.jsx";
 
 const StyledTitle = styled.h1`
@@ -63,24 +65,51 @@ const CountdownTimer = styled.span`
 `;
 
 const Verify = () => {
-  const { state } = useLocation();
-  const userEmail = state?.email || "";
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [otpValue, setOtpValue] = useState(["", "", "", "", "", ""]);
   const [isLoading, setIsLoading] = useState(false);
   const { setUser, setToken } = useStateContext();
+  const [errors, setErrors] = useState({});
   const [isSending, setIsSending] = useState(false);
   const [resendCountdown, setResendCountdown] = useState(30);
   const [isResendButtonDisabled, setIsResendButtonDisabled] = useState(false);
-  const [formData, setFormData] = useState({
-    otp: "",
-  });
-  const navigate = useNavigate();
-  const [otpValue, setOtpValue] = useState(["", "", "", "", "", ""]);
-
-  const handleOtpChange = (newValue, index) => {
-    const newOtpValue = [...otpValue];
-    newOtpValue[index] = newValue;
-    setOtpValue(newOtpValue);
+  const storedValue = localStorage.getItem("theme");
+  const initialFormData = {
+    email: location?.state?.email || "",
+    otp: otpValue.join(""),
   };
+  const [formData, setFormData] = useState(initialFormData);
+
+  const handleInputChange = (fieldName, value, index) => {
+    if (fieldName === "otp") {
+      setOtpValue((prevOtpValue) => {
+        const newOtpValue = [...prevOtpValue];
+        newOtpValue[index] = value;
+        return newOtpValue;
+      });
+    } else {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [fieldName]: value,
+      }));
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [fieldName]: "",
+      }));
+    }
+  };
+
+  // const handleInputChange = (fieldName, value, index) => {
+  //   setFormData((prevFormData) => ({
+  //     ...prevFormData,
+  //     [fieldName]: value,
+  //   }));
+  //   setErrors((prevErrors) => ({
+  //     ...prevErrors,
+  //     [fieldName]: "",
+  //   }));
+  // };
 
   const handleLogin = () => {
     navigate("/login");
@@ -112,32 +141,21 @@ const Verify = () => {
       setIsLoading(true);
 
       const endpoint = "/auth/verify-email";
-      const data = {
-        email: userEmail,
-        otp: otpValue.join(""), // Join array elements into a string
-      };
-
-      const response = await axiosClient.post(endpoint, data);
+      const response = await axiosClient.post(endpoint, formData);
 
       setUser(response.data.data);
       setToken(response.data.access_token);
-      setOtpValue(["", "", "", "", "", ""]); // Clear OTP values after verification
-      setIsLoading(false);
+      setFormData(initialFormData);
     } catch (error) {
       if (error.response?.status === 422) {
         const { errors } = error.response.data;
 
-        const newformData = { ...formData };
-
-        Object.keys(errors).forEach((fieldName) => {
-          if (Array.isArray(errors[fieldName])) {
-            newformData[fieldName] = errors[fieldName].join("\n");
-          } else {
-            newformData[fieldName] = errors[fieldName];
-          }
+        const stringErrors = {};
+        Object.keys(errors).forEach((key) => {
+          stringErrors[key] = errors[key].join("\n");
         });
 
-        setFormData(newformData);
+        setErrors(stringErrors);
       } else if (error.response?.status === 401) {
         // Handle other cases as needed
       } else {
@@ -153,26 +171,18 @@ const Verify = () => {
       setIsSending(true);
 
       const endpoint = "/auth/issue-otp";
-      const data = {
-        email: userEmail,
-      };
-
-      await axiosClient.post(endpoint, data);
+      const response = await axiosClient.post(endpoint, formData);
       startResendCountdown();
     } catch (error) {
       if (error.response?.status === 422) {
         const { errors } = error.response.data;
 
-        const newformData = { ...formData };
-
-        Object.keys(errors).forEach((fieldName) => {
-          if (Array.isArray(errors[fieldName])) {
-            newformData[fieldName] = errors[fieldName].join("\n");
-          } else {
-            newformData[fieldName] = errors[fieldName];
-          }
+        const stringErrors = {};
+        Object.keys(errors).forEach((key) => {
+          stringErrors[key] = errors[key].join("\n");
         });
-        setFormData(newformData);
+
+        setErrors(stringErrors);
       } else if (error.response?.status === 401) {
         // Handle other cases as needed
       } else {
@@ -190,18 +200,32 @@ const Verify = () => {
         <StyledSubtitle>Unleash the magic! 🚀</StyledSubtitle>
         <StyledDescription>
           {`Enter the OTP we sent to your phone or email (`}
-          <strong>{userEmail}</strong>
+          <strong>{formData.email}</strong>
           {`) and unlock a world of incredible services. Your journey with us is just a heartbeat away!`}
         </StyledDescription>
-        <StyledLogo src={LogoImage} alt="Logo" />
+        <StyledLogo
+          src={storedValue === "dark" ? LogoDarkImage : LogoLightImage}
+          alt="Logo"
+        />
         <Form onSubmit={handleVerify}>
+          <Input
+            name="email"
+            lefticon={<FaEnvelope />}
+            type="email"
+            placeholder="Enter your email"
+            value={formData.email}
+            onChange={(fieldName, newValue) =>
+              handleInputChange(fieldName, newValue)
+            }
+            margin="0 0 5px 0"
+            error={errors.email}
+          />
           <OTPInput
             name="otp"
             value={otpValue}
-            onChange={handleOtpChange}
+            onChange={handleInputChange}
             margin="5px 0 5px 0"
             error={formData.otp}
-            setInputError={setFormData}
           />
           <CheckboxContainer>
             <ResetPassword
@@ -214,6 +238,7 @@ const Verify = () => {
               <CountdownTimer>{resendCountdown}s</CountdownTimer>
             )}
           </CheckboxContainer>
+          {/* <HorizontalLoadingSpinner /> */}
           <Button
             type="submit"
             className="primary"
@@ -223,14 +248,13 @@ const Verify = () => {
             Verify
           </Button>
         </Form>
-
         <Button
           type="button"
           className="secondary"
           onClick={handleLogin}
           margin="5px 0 0 0"
         >
-          Back to Login
+          Login
         </Button>
       </Card>
     </GuestLayout>

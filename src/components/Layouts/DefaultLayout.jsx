@@ -7,6 +7,7 @@ import styled from "styled-components";
 import { useTheme } from "../Theme/ThemeProvider";
 import { useStateContext } from "../context/ContextProvider";
 import axiosClient from "../../axiosClient";
+import GlobalStyles from "../../styles/GlobalStyles";
 
 const StyledDefaultLayout = styled.div`
   display: flex;

@@ -6,7 +6,6 @@ import ThemeProvider from "./components/Theme/ThemeProvider.jsx";
 import LoadingSpinner from "./components/common/LoadingSpinner.jsx";
 import { ContextProvider } from "./components/context/ContextProvider.jsx";
 import router from "./router.jsx";
-import GlobalStyles from "./styles/GlobalStyles.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

@@ -13,6 +13,7 @@ import Form from "../../components/common/Form";
 import Input from "../../components/common/Input";
 import { useStateContext } from "../../components/context/ContextProvider.jsx";
 import { requestNotificationPermission } from "../../firebase/FCMUtils";
+import { useToast } from '../../components/common/Toast';
 
 const StyledTitle = styled.h1`
   font-size: 24px;
@@ -61,6 +62,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { setUser, setToken } = useStateContext();
   const [errors, setErrors] = useState({});
+  const toast = useToast();
   const storedValue = localStorage.getItem("theme");
   const initialFormData = {
     email: "",
@@ -106,7 +108,7 @@ const Login = () => {
   };
 
   const handleResetPassword = () => {
-    navigate("/reset-password", { state: formData.email });
+    navigate("/reset-password", { state: { email: formData.email } });
   };
 
   const handleRegister = () => {
