@@ -18,7 +18,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             fallbackElement={<LoadingSpinner />}
           />
         </ContextProvider>
-        <GlobalStyles />
       </ThemeProvider>
     </ErrorBoundary>
   </React.StrictMode>

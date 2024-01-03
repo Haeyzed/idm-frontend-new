@@ -9,6 +9,8 @@ import Button from "../../components/common/Button";
 import Card from "../../components/common/Card";
 import Form from "../../components/common/Form";
 import Input from "../../components/common/Input";
+import LogoLightImage from "../../assets/images/logo-sm-dark.png";
+import LogoDarkImage from "../../assets/images/logo-sm-light.png";
 import { useStateContext } from "../../components/context/ContextProvider.jsx";
 
 const StyledTitle = styled.h1`
@@ -45,9 +47,11 @@ const ResetPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { setUser, setToken } = useStateContext();
   const [errors, setErrors] = useState({});
-  const [formData, setFormData] = useState({
+  const storedValue = localStorage.getItem("theme");
+  const initialFormData = {
     email: "",
-  });
+  };
+  const [formData, setFormData] = useState(initialFormData);
 
   const handleInputChange = (fieldName, value) => {
     setFormData((prevFormData) => ({
@@ -75,9 +79,7 @@ const ResetPassword = () => {
 
       setUser(response.data.data);
       setToken(response.data.access_token);
-      setFormData({
-        email: "",
-      });
+      setFormData(initialFormData);
     } catch (error) {
       if (error.response?.status === 422) {
         const { errors } = error.response.data;
@@ -110,7 +112,10 @@ const ResetPassword = () => {
           instructions to reset your password. Swiftly reclaim access to your
           account. Your trust is our priority! Thank you for choosing us!
         </StyledDescription>
-        <StyledLogo src={LogoImage} alt="Logo" />
+        <StyledLogo
+          src={storedValue === "dark" ? LogoDarkImage : LogoLightImage}
+          alt="Logo"
+        />
         <Form onSubmit={handleResetPassword}>
           <Input
             name="email"

@@ -3,13 +3,13 @@ import styled from "styled-components";
 import { useTheme } from "../../components/Theme/ThemeProvider";
 import { useStateContext } from "../context/ContextProvider";
 import { Navigate, useNavigate } from "react-router-dom";
-import Toast from "../common/Toast";
+import GlobalStyles from "../../styles/GlobalStyles";
 
 const StyledGuestLayout = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
 `;
 
 const GuestLayout = ({ children }) => {
@@ -28,7 +28,12 @@ const GuestLayout = ({ children }) => {
   }
 
   return (
-      <StyledGuestLayout theme={theme}>{children}</StyledGuestLayout>
+    <>
+    <GlobalStyles />
+    <StyledGuestLayout theme={theme}>
+      {children}
+    </StyledGuestLayout>
+    </>
   );
 };
 

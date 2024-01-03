@@ -6,10 +6,13 @@ import Step3 from "./Step3";
 import Submit from "./Submit";
 import Card from "../../components/common/Card";
 import styled from "styled-components";
+import LogoLightImage from "../../assets/images/logo-sm-dark.png";
+import LogoDarkImage from "../../assets/images/logo-sm-light.png";
 import LogoImage from "../../assets/images/logo-sm-dark.png";
 import axiosClient from "../../axiosClient";
 import { useNavigate } from "react-router-dom";
 import { requestNotificationPermission } from "../../firebase/FCMUtils";
+import Button from "../../components/common/Button";
 
 const StyledTitle = styled.h1`
   font-size: 24px;
@@ -51,6 +54,7 @@ const Register = () => {
   const [files, setFiles] = useState([]);
   const [cityOptions, setCityOptions] = useState([]);
   const [isMultiple, setIsMultiple] = useState(false);
+  const storedValue = localStorage.getItem("theme");
   const initialFormData = {
     title: "",
     name: "",
@@ -81,7 +85,6 @@ const Register = () => {
 
   const handleSelectChange = (fieldName, selectedOption) => {
     const value = selectedOption.value;
-    console.log(`Selected ${fieldName} ID:`, value);
     setFormData((prevFormData) => ({
       ...prevFormData,
       [fieldName]: value,
@@ -125,6 +128,10 @@ const Register = () => {
 
   const back = () => {
     setCurrentStep(currentStep - 1);
+  };
+
+  const handleLogin = () => {
+    navigate("/login");
   };
 
   const handleRegister = async (event) => {
@@ -260,7 +267,10 @@ const Register = () => {
           Register now to unlock a world of possibilities and begin your
           exciting adventure with us. We're thrilled to have you on board! 🚀
         </StyledDescription>
-        <StyledLogo src={LogoImage} alt="Logo" />
+        <StyledLogo
+          src={storedValue === "dark" ? LogoDarkImage : LogoLightImage}
+          alt="Logo"
+        />
         {(() => {
           switch (currentStep) {
             case 1:
@@ -311,6 +321,14 @@ const Register = () => {
               );
           }
         })()}
+        <Button
+          type="button"
+          className="secondary"
+          onClick={handleLogin}
+          margin="5px 0 0 0"
+        >
+          Login
+        </Button>
       </Card>
     </GuestLayout>
   );

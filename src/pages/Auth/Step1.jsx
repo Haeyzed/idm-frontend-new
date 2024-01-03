@@ -69,7 +69,7 @@ const Step1 = (props) => {
         onClick={next}
         type="button"
         className="primary"
-        margin="5px 0 0 0"
+        margin="5px 0 5px 0"
       >
         Next
       </Button>

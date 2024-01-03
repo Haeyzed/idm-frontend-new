@@ -153,7 +153,7 @@ const Step2 = (props) => {
         onClick={back}
         type="button"
         className="secondary"
-        margin="5px 0 0 0"
+        margin="5px 0 5px 0"
       >
         Previous
       </Button>

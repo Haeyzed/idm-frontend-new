@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import LogoImage from "../../assets/images/logo-sm-dark.png";
+import LogoLightImage from "../../assets/images/logo-sm-dark.png";
+import LogoDarkImage from "../../assets/images/logo-sm-light.png";
 import axiosClient from "../../axiosClient";
 import GuestLayout from "../../components/Layouts/GuestLayout";
 import Button from "../../components/common/Button";
@@ -60,23 +61,36 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { setUser, setToken } = useStateContext();
   const [errors, setErrors] = useState({});
-  const [formData, setFormData] = useState({
+  const storedValue = localStorage.getItem("theme");
+  const initialFormData = {
     email: "",
     password: "",
     fcm_token: "",
     remember: false,
-  });
+    ip_address: "",
+  };
+  const [formData, setFormData] = useState(initialFormData);
 
   useEffect(() => {
     const initializeFirebaseMessaging = async () => {
       try {
         const token = await requestNotificationPermission();
-        setFormData((prevFormData) => ({ ...prevFormData, fcm_token: token }));
+        handleInputChange("fcm_token", token);
       } catch (error) {
         console.error("Error initializing Firebase Messaging:", error);
       }
     };
 
+    const fetchIpAddress = async () => {
+      try {
+        const response = await fetch("https://api64.ipify.org?format=json");
+        const data = await response.json();
+        handleInputChange("ip_address", data.ip);
+      } catch (error) {
+        console.error("Error fetching IP address:", error);
+      }
+    };
+    fetchIpAddress();
     initializeFirebaseMessaging();
   }, []);
 
@@ -117,12 +131,7 @@ const Login = () => {
 
       setUser(response.data.data);
       setToken(response.data.access_token);
-      setFormData({
-        email: "",
-        password: "",
-        remember: false,
-        fcm_token: "",
-      });
+      setFormData(initialFormData);
     } catch (error) {
       if (error.response?.status === 422) {
         const { errors } = error.response.data;
@@ -153,7 +162,10 @@ const Login = () => {
           of limitless possibilities. We're thrilled to have you back. Let the
           adventure begin! 🚀
         </StyledDescription>
-        <StyledLogo src={LogoImage} alt="Logo" />
+        <StyledLogo
+          src={storedValue === "dark" ? LogoDarkImage : LogoLightImage}
+          alt="Logo"
+        />
         <Form onSubmit={handleLogin}>
           <Input
             name="email"

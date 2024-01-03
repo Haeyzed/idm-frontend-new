@@ -8,7 +8,10 @@ const StyledMain = styled.div`
   padding: 16px;
   background-color: ${(props) => props.theme.mainBackground};
   color: ${(props) => props.theme.mainText};
+  min-height: 0; /* Add min-height property */
+  overflow-y: auto; /* Add overflow-y property */
 `;
+
 
 const Main = ({ children }) => {
   return <StyledMain>{children}</StyledMain>;

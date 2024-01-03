@@ -10,13 +10,14 @@ import axiosClient from "../../axiosClient";
 
 const StyledDefaultLayout = styled.div`
   display: flex;
-  height: 100%;
+  min-height: 100vh;
 `;
 
 const ContentContainer = styled.div`
-  flex: 1;
   display: flex;
   flex-direction: column;
+  flex: 1; /* Allow the ContentContainer to take up all available space */
+  overflow: hidden; /* Hide content overflow */
 `;
 
 const DefaultLayout = ({ children }) => {
@@ -43,13 +44,16 @@ const DefaultLayout = ({ children }) => {
   }, []);
 
   return (
-    <StyledDefaultLayout theme={theme}>
-      <Sidebar onLogout={onLogout} />
-      <ContentContainer>
-        <Header user={user} onLogout={onLogout} />
-        <Main>{children}</Main>
-      </ContentContainer>
-    </StyledDefaultLayout>
+    <>
+      <GlobalStyles />
+      <StyledDefaultLayout theme={theme}>
+        <Sidebar onLogout={onLogout} />
+        <ContentContainer>
+          <Header user={user} onLogout={onLogout} />
+          <Main>{children}</Main>
+        </ContentContainer>
+      </StyledDefaultLayout>
+    </>
   );
 };
 

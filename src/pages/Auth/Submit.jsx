@@ -57,10 +57,20 @@ const Submit = (props) => {
   return (
     <SubmitContainer>
       <StyledList>{listItems}</StyledList>
-      <Button type="submit" className="primary" margin="5px 0 0 0" onClick={handleSubmit}>
+      <Button
+        type="submit"
+        className="primary"
+        margin="5px 0 5px 0"
+        onClick={handleSubmit}
+      >
         Submit
       </Button>
-      <Button onClick={back} type="button" className="secondary" margin="5px 0 0 0">
+      <Button
+        onClick={back}
+        type="button"
+        className="secondary"
+        margin="5px 0 5px 0"
+      >
         Previous
       </Button>
     </SubmitContainer>
