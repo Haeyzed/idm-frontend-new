@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FaEnvelope } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import axiosClient from "../../axiosClient";
+import axiosClient from "../../axiosClient.js";
 import GuestLayout from "../../components/Layouts/GuestLayout";
 import Button from "../../components/common/Button";
 import Card from "../../components/common/Card";

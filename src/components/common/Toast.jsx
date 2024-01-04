@@ -70,8 +70,8 @@ const slideOutAnimation = keyframes`
 const StyledToast = styled.div`
   display: flex;
   align-items: center;
-  background-color: ${(props) => props.theme.cardBackground};
-  // background-color: #ffffff;
+  // background-color: ${(props) => props.theme.cardBackground};
+  background-color: #ffffff;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 16px;

@@ -3,7 +3,12 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import LogoLightImage from "../../assets/images/logo-sm-dark.png";
 import LogoDarkImage from "../../assets/images/logo-sm-light.png";
-import axiosClient from "../../axiosClient";
+import axiosClient, {
+  setHandleGenericErrorCallback,
+  setHandleUnauthorizedErrorCallback,
+  setHandleValidationErrorCallback,
+  setHandleDefaultErrorCallback,
+} from "../../axiosClient";
 import GuestLayout from "../../components/Layouts/GuestLayout";
 import Button from "../../components/common/Button";
 import Card from "../../components/common/Card";
@@ -13,6 +18,7 @@ import Step1 from "./Step1";
 import Step2 from "./Step2";
 import Step3 from "./Step3";
 import Submit from "./Submit";
+import { useStateContext } from "../../components/context/ContextProvider";
 
 const StyledTitle = styled.h1`
   font-size: 24px;
@@ -52,6 +58,7 @@ const Register = () => {
   const [countries, setCountries] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);
   const [files, setFiles] = useState([]);
+  const { setUser, setToken } = useStateContext();
   const [cityOptions, setCityOptions] = useState([]);
   const [isMultiple, setIsMultiple] = useState(false);
   const toast = useToast();
@@ -135,6 +142,29 @@ const Register = () => {
     navigate("/login");
   };
 
+  setHandleGenericErrorCallback((response) => {
+    toast.error(response.data.message || "An error occurred");
+  });
+
+  setHandleUnauthorizedErrorCallback((response) => {
+    toast.error(response.data.message || "Unauthorized. Please log in.");
+  });
+
+  setHandleValidationErrorCallback((response) => {
+    toast.warning(response.data.message || "Validation Error");
+
+    const { errors } = response.data;
+    const stringErrors = {};
+    Object.keys(errors).forEach((key) => {
+      stringErrors[key] = errors[key].join("\n");
+    });
+    setErrors(stringErrors);
+  });
+
+  setHandleDefaultErrorCallback((response) => {
+    toast.error(response.data.message || "An error occurred");
+  });
+
   const handleRegister = async (event) => {
     event.preventDefault();
 
@@ -152,26 +182,8 @@ const Register = () => {
 
       setUser(response.data.data);
       setToken(response.data.access_token);
-      toast.success(response.data.message)
+      toast.success(response.data.message);
       setFormData(initialFormData);
-    } catch (error) {
-      if (error.response?.status === 422) {
-        const { errors, message } = error.response.data;
-        toast.warning(message)
-
-        const stringErrors = {};
-        Object.keys(errors).forEach((key) => {
-          stringErrors[key] = errors[key].join("\n");
-        });
-
-        setErrors(stringErrors);
-      } else if (error.response?.status === 401) {
-        const { message } = error.response.data;
-        toast.error(message)
-      } else {
-        const { message } = error.response.data;
-        toast.error(message)
-      }
     } finally {
       setIsLoading(false);
     }
@@ -205,12 +217,6 @@ const Register = () => {
       }
     };
 
-    initializeFirebaseMessaging();
-    fetchTitles();
-    fetchCountries();
-  }, []);
-
-  useEffect(() => {
     const fetchStates = async () => {
       if (formData.country_id) {
         try {
@@ -224,10 +230,6 @@ const Register = () => {
       }
     };
 
-    fetchStates();
-  }, [formData.country_id]);
-
-  useEffect(() => {
     const fetchCities = async () => {
       if (formData.state_id) {
         try {
@@ -242,7 +244,12 @@ const Register = () => {
     };
 
     fetchCities();
-  }, [formData.state_id]);
+    fetchStates();
+
+    initializeFirebaseMessaging();
+    fetchTitles();
+    fetchCountries();
+  }, [navigate, formData.country_id, formData.state_id]);
 
   const genderOptions = [
     { value: "male", label: "Male" },

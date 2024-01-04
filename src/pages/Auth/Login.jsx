@@ -9,6 +9,7 @@ import axiosClient, {
   setHandleUnauthorizedErrorCallback,
   setHandleValidationErrorCallback,
   setHandleDefaultErrorCallback,
+  setRedirectCallback,
 } from "../../axiosClient";
 import GuestLayout from "../../components/Layouts/GuestLayout";
 import Button from "../../components/common/Button";
@@ -79,6 +80,10 @@ const Login = () => {
   const [formData, setFormData] = useState(initialFormData);
 
   useEffect(() => {
+    setRedirectCallback(() => {
+      navigate("/login");
+    });
+
     const initializeFirebaseMessaging = async () => {
       try {
         const token = await requestNotificationPermission();
@@ -99,7 +104,7 @@ const Login = () => {
     };
     fetchIpAddress();
     initializeFirebaseMessaging();
-  }, []);
+  }, [navigate]);
 
   const handleInputChange = (fieldName, value) => {
     setFormData((prevFormData) => ({
@@ -109,6 +114,13 @@ const Login = () => {
     setErrors((prevErrors) => ({
       ...prevErrors,
       [fieldName]: "",
+    }));
+  };
+
+  const handleCheckboxChange = (fieldName, checked) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [fieldName]: checked,
     }));
   };
 
