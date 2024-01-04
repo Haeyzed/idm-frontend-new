@@ -106,7 +106,7 @@ const Verify = () => {
 
     const newErrors = { ...errors };
 
-    if (fieldName === "otp" && !/^[0-9]$/.test(newValue)) {
+    if (fieldName === "otp" && /[^0-9]/.test(newValue)) {
       newErrors[fieldName] =
         "Invalid OTP format. Please enter only numeric values.";
     } else {

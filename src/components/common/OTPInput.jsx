@@ -142,20 +142,18 @@ const OTPInput = ({
     if (onChange) {
       const newValue = e.target.value.slice(0, 1);
       onChange(newValue, index);
-  
-      if (newValue !== "" && index < inputRefs.length - 1) {
-        setTimeout(() => {
+
+      setTimeout(() => {
+        if (newValue !== "" && index < inputRefs.length - 1) {
           inputRefs[index + 1].current.focus();
-        }, 0);
-      }
-  
-      if (e.target.selectionStart === 0 && index > 0) {
-        setTimeout(() => {
+        }
+
+        if (e.target.selectionStart === 0 && index > 0) {
           inputRefs[index - 1].current.focus();
-        }, 0);
-      }
+        }
+      }, 0);
     }
-  };  
+  };
 
   const handlePaste = (e) => {
     e.preventDefault();

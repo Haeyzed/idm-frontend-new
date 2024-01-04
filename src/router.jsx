@@ -9,6 +9,7 @@ import Home from "./pages/landing/Home";
 import OAuthClients from "./pages/Oauth/OAuthClients";
 import UserForm from "./pages/Users/UserForm";
 import Users from "./pages/users/Users";
+import Unlock from "./pages/Auth/Unlock";
 
 const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
@@ -20,6 +21,7 @@ const router = createBrowserRouter([
   { path: "/users", element: <Users /> },
   { path: "/users/create", element: <UserForm /> },
   { path: "/oauth-clients", element: <OAuthClients /> },
+  { path: "/unlock", element: <Unlock /> },
 ]);
 
 export default router;

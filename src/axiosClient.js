@@ -1,15 +1,20 @@
-// axiosClient.js
 import axios from "axios";
 
 const axiosClient = axios.create({
   baseURL: `${import.meta.env.VITE_API_BASE_URL}/api`,
 });
 
+axiosClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem("access_token");
+  config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
 let handleGenericErrorCallback;
 let handleUnauthorizedErrorCallback;
 let handleValidationErrorCallback;
 let handleDefaultErrorCallback;
-let redirectCallback; // Add this variable
+let redirectCallback;
 
 export const setHandleGenericErrorCallback = (callback) => {
   handleGenericErrorCallback = callback;
@@ -39,7 +44,7 @@ const handleErrorResponse = (error) => {
       case 401:
         handleUnauthorizedErrorCallback(response);
         if (redirectCallback) {
-          redirectCallback(); // Call the redirect callback
+          redirectCallback();
         }
         break;
       case 422:
