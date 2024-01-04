@@ -85,7 +85,6 @@ export const lightTheme = {
   menuItemText: "#333",
   menuItemHoverBackground: "#f5f5f5",
   menuItemHoverText: "#0077ff",
-  notificationBackground: "#d9edf7",
   notificationText: "#31708f",
   checkboxBackgroundChecked: "#0077ff",
   checkboxBorderChecked: "#0077ff",
@@ -102,6 +101,10 @@ export const lightTheme = {
   errorColor: "red",
   errorShadow: "rgba(255, 0, 0, 0.2)",
   dangerColor: "red",
+  successColor: "#00cc00",
+  infoColor: "#3399ff",
+  warningColor: "#ffcc00",
+  notificationBackground: "#fff",
 };
 
 export const darkTheme = {
@@ -191,7 +194,6 @@ export const darkTheme = {
   menuItemText: "#fff",
   menuItemHoverBackground: "#333",
   menuItemHoverText: "#0077ff",
-  notificationBackground: "#34495e",
   notificationText: "#ecf0f1",
   checkboxBackgroundChecked: "#0077ff",
   checkboxBorderChecked: "#0077ff",
@@ -208,4 +210,8 @@ export const darkTheme = {
   errorColor: "red",
   errorShadow: "rgba(255, 0, 0, 0.2)",
   dangerColor: "red",
+  successColor: "#00cc00",
+  infoColor: "#3399ff",
+  warningColor: "#ffcc00",
+  notificationBackground: "#1a1a1a",
 };

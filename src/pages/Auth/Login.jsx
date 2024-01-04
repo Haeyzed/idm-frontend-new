@@ -8,12 +8,12 @@ import axiosClient from "../../axiosClient";
 import GuestLayout from "../../components/Layouts/GuestLayout";
 import Button from "../../components/common/Button";
 import Card from "../../components/common/Card";
-import Checkbox from "../../components/common/Checkbox.jsx";
+import Checkbox from "../../components/common/Checkbox";
 import Form from "../../components/common/Form";
 import Input from "../../components/common/Input";
-import { useStateContext } from "../../components/context/ContextProvider.jsx";
+import { useStateContext } from "../../components/context/ContextProvider";
 import { requestNotificationPermission } from "../../firebase/FCMUtils";
-import { useToast } from '../../components/common/Toast';
+import { useToast } from "../../utils/useToast";
 
 const StyledTitle = styled.h1`
   font-size: 24px;
@@ -62,8 +62,8 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { setUser, setToken } = useStateContext();
   const [errors, setErrors] = useState({});
-  const toast = useToast();
   const storedValue = localStorage.getItem("theme");
+  const toast = useToast();
   const initialFormData = {
     email: "",
     password: "",
@@ -134,9 +134,11 @@ const Login = () => {
       setUser(response.data.data);
       setToken(response.data.access_token);
       setFormData(initialFormData);
+      toast.success(response.data.message)
     } catch (error) {
       if (error.response?.status === 422) {
-        const { errors } = error.response.data;
+        const { errors, message } = error.response.data;
+        toast.warning(message)
 
         const stringErrors = {};
         Object.keys(errors).forEach((key) => {
@@ -145,9 +147,11 @@ const Login = () => {
 
         setErrors(stringErrors);
       } else if (error.response?.status === 401) {
-        // Handle other cases as needed
+        const { message } = error.response.data;
+        toast.error(message)
       } else {
-        // Handle other cases as needed
+        const { message } = error.response.data;
+        toast.error(message)
       }
     } finally {
       setIsLoading(false);

@@ -2,16 +2,16 @@ import React, { useState } from "react";
 import { FaEnvelope } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import LogoImage from "../../assets/images/logo-sm-dark.png";
+import LogoLightImage from "../../assets/images/logo-sm-dark.png";
+import LogoDarkImage from "../../assets/images/logo-sm-light.png";
 import axiosClient from "../../axiosClient";
 import GuestLayout from "../../components/Layouts/GuestLayout";
 import Button from "../../components/common/Button";
 import Card from "../../components/common/Card";
 import Form from "../../components/common/Form";
 import Input from "../../components/common/Input";
-import LogoLightImage from "../../assets/images/logo-sm-dark.png";
-import LogoDarkImage from "../../assets/images/logo-sm-light.png";
-import { useStateContext } from "../../components/context/ContextProvider.jsx";
+import { useStateContext } from "../../components/context/ContextProvider";
+import { useToast } from "../../utils/useToast";
 
 const StyledTitle = styled.h1`
   font-size: 24px;
@@ -48,6 +48,7 @@ const ResetPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { setUser, setToken } = useStateContext();
   const [errors, setErrors] = useState({});
+  const toast = useToast();
   const storedValue = localStorage.getItem("theme");
   const initialFormData = {
     email: location?.state?.email || "",
@@ -81,9 +82,11 @@ const ResetPassword = () => {
       setUser(response.data.data);
       setToken(response.data.access_token);
       setFormData(initialFormData);
+      toast.success(response.data.message)
     } catch (error) {
       if (error.response?.status === 422) {
-        const { errors } = error.response.data;
+        const { errors, message } = error.response.data;
+        toast.warning(message)
 
         const stringErrors = {};
         Object.keys(errors).forEach((key) => {
@@ -92,9 +95,11 @@ const ResetPassword = () => {
 
         setErrors(stringErrors);
       } else if (error.response?.status === 401) {
-        // Handle other cases as needed
+        const { message } = error.response.data;
+        toast.error(message)
       } else {
-        // Handle other cases as needed
+        const { message } = error.response.data;
+        toast.error(message)
       }
     } finally {
       setIsLoading(false);

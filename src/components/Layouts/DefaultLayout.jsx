@@ -8,6 +8,7 @@ import { useTheme } from "../Theme/ThemeProvider";
 import { useStateContext } from "../context/ContextProvider";
 import axiosClient from "../../axiosClient";
 import GlobalStyles from "../../styles/GlobalStyles";
+import { useToast } from "../../utils/useToast";
 
 const StyledDefaultLayout = styled.div`
   display: flex;
@@ -23,6 +24,7 @@ const ContentContainer = styled.div`
 
 const DefaultLayout = ({ children }) => {
   const { toggleTheme, theme } = useTheme();
+  const toast = useToast();
   const { user, token, setUser, setToken, notification } = useStateContext();
 
   if (!token) {
@@ -35,6 +37,7 @@ const DefaultLayout = ({ children }) => {
     axiosClient.post("/auth/logout").then(() => {
       setUser({});
       setToken(null);
+      toast.success(response.data.message)
     });
   };
 

@@ -12,6 +12,7 @@ import OTPInput from "../../components/common/OTPInput";
 import LogoLightImage from "../../assets/images/logo-sm-dark.png";
 import LogoDarkImage from "../../assets/images/logo-sm-light.png";
 import { useStateContext } from "../../components/context/ContextProvider.jsx";
+import { useToast } from "../../utils/useToast.jsx";
 
 const StyledTitle = styled.h1`
   font-size: 24px;
@@ -75,6 +76,7 @@ const Verify = () => {
   const [resendCountdown, setResendCountdown] = useState(30);
   const [isResendButtonDisabled, setIsResendButtonDisabled] = useState(false);
   const storedValue = localStorage.getItem("theme");
+  const toast = useToast();
   const initialFormData = {
     email: location?.state?.email || "",
     otp: otpValue.join(""),
@@ -146,9 +148,11 @@ const Verify = () => {
       setUser(response.data.data);
       setToken(response.data.access_token);
       setFormData(initialFormData);
+      toast.success(response.data.message)
     } catch (error) {
       if (error.response?.status === 422) {
-        const { errors } = error.response.data;
+        const { errors, message } = error.response.data;
+        toast.warning(message)
 
         const stringErrors = {};
         Object.keys(errors).forEach((key) => {
@@ -157,9 +161,11 @@ const Verify = () => {
 
         setErrors(stringErrors);
       } else if (error.response?.status === 401) {
-        // Handle other cases as needed
+        const { message } = error.response.data;
+        toast.error(message)
       } else {
-        // Handle other cases as needed
+        const { message } = error.response.data;
+        toast.error(message)
       }
     } finally {
       setIsLoading(false);

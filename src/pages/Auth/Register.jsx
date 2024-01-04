@@ -12,6 +12,8 @@ import Step1 from "./Step1";
 import Step2 from "./Step2";
 import Step3 from "./Step3";
 import Submit from "./Submit";
+import { useNotification } from "../../components/context/NotificationProvider";
+import { useToast } from "../../utils/useToast";
 
 const StyledTitle = styled.h1`
   font-size: 24px;
@@ -53,6 +55,7 @@ const Register = () => {
   const [files, setFiles] = useState([]);
   const [cityOptions, setCityOptions] = useState([]);
   const [isMultiple, setIsMultiple] = useState(false);
+  const toast = useToast();
   const storedValue = localStorage.getItem("theme");
   const initialFormData = {
     title: "",
@@ -150,10 +153,12 @@ const Register = () => {
 
       setUser(response.data.data);
       setToken(response.data.access_token);
+      toast.success(response.data.message)
       setFormData(initialFormData);
     } catch (error) {
       if (error.response?.status === 422) {
-        const { errors } = error.response.data;
+        const { errors, message } = error.response.data;
+        toast.warning(message)
 
         const stringErrors = {};
         Object.keys(errors).forEach((key) => {
@@ -162,9 +167,11 @@ const Register = () => {
 
         setErrors(stringErrors);
       } else if (error.response?.status === 401) {
-        // Handle other cases as needed
+        const { message } = error.response.data;
+        toast.error(message)
       } else {
-        // Handle other cases as needed
+        const { message } = error.response.data;
+        toast.error(message)
       }
     } finally {
       setIsLoading(false);
