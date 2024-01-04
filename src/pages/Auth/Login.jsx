@@ -4,7 +4,12 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import LogoLightImage from "../../assets/images/logo-sm-dark.png";
 import LogoDarkImage from "../../assets/images/logo-sm-light.png";
-import axiosClient from "../../axiosClient";
+import axiosClient, {
+  setHandleGenericErrorCallback,
+  setHandleUnauthorizedErrorCallback,
+  setHandleValidationErrorCallback,
+  setHandleDefaultErrorCallback,
+} from "../../axiosClient";
 import GuestLayout from "../../components/Layouts/GuestLayout";
 import Button from "../../components/common/Button";
 import Card from "../../components/common/Card";
@@ -115,12 +120,28 @@ const Login = () => {
     navigate("/register");
   };
 
-  const handleCheckboxChange = (fieldName, checked) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [fieldName]: checked,
-    }));
-  };
+  setHandleGenericErrorCallback((response) => {
+    toast.error(response.data.message || "An error occurred");
+  });
+
+  setHandleUnauthorizedErrorCallback((response) => {
+    toast.error(response.data.message || "Unauthorized. Please log in.");
+  });
+
+  setHandleValidationErrorCallback((response) => {
+    toast.warning(response.data.message || "Validation Error");
+
+    const { errors } = response.data;
+    const stringErrors = {};
+    Object.keys(errors).forEach((key) => {
+      stringErrors[key] = errors[key].join("\n");
+    });
+    setErrors(stringErrors);
+  });
+
+  setHandleDefaultErrorCallback((response) => {
+    toast.error(response.data.message || "An error occurred");
+  });
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -134,25 +155,7 @@ const Login = () => {
       setUser(response.data.data);
       setToken(response.data.access_token);
       setFormData(initialFormData);
-      toast.success(response.data.message)
-    } catch (error) {
-      if (error.response?.status === 422) {
-        const { errors, message } = error.response.data;
-        toast.warning(message)
-
-        const stringErrors = {};
-        Object.keys(errors).forEach((key) => {
-          stringErrors[key] = errors[key].join("\n");
-        });
-
-        setErrors(stringErrors);
-      } else if (error.response?.status === 401) {
-        const { message } = error.response.data;
-        toast.error(message)
-      } else {
-        const { message } = error.response.data;
-        toast.error(message)
-      }
+      toast.success(response.data.message);
     } finally {
       setIsLoading(false);
     }
