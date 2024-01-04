@@ -96,6 +96,8 @@ const DefaultLayout = ({ children }) => {
     axiosClient.post("/auth/logout").then((response) => {
       setUser({});
       setToken(null);
+      setInactive(false);
+      setStoredInactiveState(false);
       toast.success(response.data.message);
     });
   };
