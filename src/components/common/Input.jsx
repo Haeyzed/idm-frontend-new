@@ -182,6 +182,7 @@ const Input = ({
   minLength,
   maxLength,
   disabled,
+  ...rest
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const handleInputChange = (e) => {
@@ -197,9 +198,9 @@ const Input = ({
 
   return (
     <>
-      {label && <Label htmlFor={name}>{label} :</Label>}
+      {label && <Label {...rest} htmlFor={name}>{label} :</Label>}
       <InputContainer>
-        {lefticon && <LeftIcon>{lefticon}</LeftIcon>}
+        {lefticon && <LeftIcon {...rest}>{lefticon}</LeftIcon>}
         <StyledInput
           name={name}
           type={showPassword ? "text" : type}
@@ -212,19 +213,20 @@ const Input = ({
           minLength={minLength}
           maxLength={maxLength}
           disabled={disabled}
+          {...rest}
         />
         {type === "password" && showPasswordToggle && (
-          <PasswordToggle type="button" onClick={handleTogglePassword}>
+          <PasswordToggle {...rest} type="button" onClick={handleTogglePassword}>
             {showPassword ? <FaEyeSlash /> : <FaEye />}
           </PasswordToggle>
         )}
       </InputContainer>
       {minLength && maxLength && (
-        <ErrorSpan>
+        <ErrorSpan {...rest}>
           {value.length}/{maxLength} characters
         </ErrorSpan>
       )}
-      {error && <ErrorSpan>{error}</ErrorSpan>}
+      {error && <ErrorSpan {...rest}>{error}</ErrorSpan>}
     </>
   );
 };

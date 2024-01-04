@@ -227,6 +227,7 @@ const Verify = () => {
             }
             margin="0 0 5px 0"
             error={errors.email}
+            hidden
           />
           <OTPInput
             name="otp"
