@@ -8,12 +8,11 @@ import GuestLayout from "../../components/Layouts/GuestLayout";
 import Button from "../../components/common/Button";
 import Card from "../../components/common/Card";
 import { requestNotificationPermission } from "../../firebase/FCMUtils";
+import { useToast } from "../../utils/useToast";
 import Step1 from "./Step1";
 import Step2 from "./Step2";
 import Step3 from "./Step3";
 import Submit from "./Submit";
-import { useNotification } from "../../components/context/NotificationProvider";
-import { useToast } from "../../utils/useToast";
 
 const StyledTitle = styled.h1`
   font-size: 24px;

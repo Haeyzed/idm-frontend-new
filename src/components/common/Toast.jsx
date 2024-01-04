@@ -1,38 +1,51 @@
-import React, { useEffect, useRef, useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import React, { useEffect, useRef, useState } from "react";
+import styled, { css, keyframes } from "styled-components";
 import {
   IconAlertCircleFilled,
   IconCircleCheckFilled,
   IconCircleXFilled,
   IconInfoCircleFilled,
   IconX,
-} from '@tabler/icons-react';
-import { useToast } from '../../utils/useToast';
+} from "@tabler/icons-react";
+import { useToast } from "../../utils/useToast";
 
 const toastTypes = {
   success: {
     icon: <IconCircleCheckFilled />,
-    iconColor: 'var(--success)',
-    progressBarClass: 'success',
+    iconClass: "success-icon",
+    progressBarClass: "success",
+    color: "#22c55e",
   },
   warning: {
     icon: <IconAlertCircleFilled />,
-    iconColor: 'var(--warning)',
-    progressBarClass: 'warning',
+    iconClass: "warning-icon",
+    progressBarClass: "warning",
+    color: "#f97316",
   },
   info: {
     icon: <IconInfoCircleFilled />,
-    iconColor: 'var(--info)',
-    progressBarClass: 'info',
+    iconClass: "info-icon",
+    progressBarClass: "info",
+    color: "#3b82f6",
   },
   error: {
     icon: <IconCircleXFilled />,
-    iconColor: 'var(--error)',
-    progressBarClass: 'error',
+    iconClass: "error-icon",
+    progressBarClass: "error",
+    color: "#ef4444",
   },
 };
 
-const slideIn = keyframes`
+const progressBarAnimation = keyframes`
+  0% {
+    width: 100%;
+  }
+  100% {
+    width: 0%;
+  }
+`;
+
+const slideInAnimation = keyframes`
   0% {
     opacity: 0;
     transform: translateX(100%);
@@ -43,7 +56,7 @@ const slideIn = keyframes`
   }
 `;
 
-const slideOut = keyframes`
+const slideOutAnimation = keyframes`
   0% {
     opacity: 1;
     transform: translateX(0%);
@@ -54,42 +67,37 @@ const slideOut = keyframes`
   }
 `;
 
-const ToastContainer = styled.div`
+const StyledToast = styled.div`
   display: flex;
   align-items: center;
-  background-color: #ffffff;
+  background-color: ${(props) => props.theme.cardBackground};
+  // background-color: #ffffff;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 16px;
   position: relative;
   width: 320px;
   overflow: hidden;
-  animation: ${slideIn} 0.4s ease-in-out forwards;
+  animation: ${slideInAnimation} 0.4s ease-in-out forwards;
 
   &.toast-dismissed {
-    animation: ${slideOut} 0.4s ease-in-out forwards;
+    animation: ${slideOutAnimation} 0.4s ease-in-out forwards;
+  }
+
+  &:hover {
+    .toast-progress-bar {
+      animation-play-state: paused;
+    }
   }
 `;
 
-const ToastMessage = styled.p`
-  color: #151626;
-  font-size: 14px;
-  font-weight: 500;
-  margin-left: 12px;
+const StyledIcon = styled.span`
+  ${({ color }) => css`
+    color: ${color};
+  `}
 `;
 
-const DismissButton = styled.button`
-  cursor: pointer;
-  border: none;
-  background: none;
-  margin-left: auto;
-`;
-
-const ToastIcon = styled.span`
-  color: ${(props) => props.iconColor};
-`;
-
-const ToastProgressContainer = styled.div`
+const StyledProgressBar = styled.div`
   position: absolute;
   bottom: 0;
   left: 0;
@@ -98,40 +106,34 @@ const ToastProgressContainer = styled.div`
   background-color: rgba(0, 0, 0, 0.1);
 `;
 
-const ToastProgressBar = styled.div`
-  height: 100%;
-  animation: ${keyframes`
-    0% {
-      width: 100%;
-    }
-    100% {
-      width: 0%;
-    }
-  `} 4s linear forwards;
+const StyledProgressBarBar = styled.div`
+  ${({ color }) => css`
+    height: 100%;
+    animation: ${progressBarAnimation} 4s linear forwards;
+    background-color: ${color};
+  `}
+`;
 
-  &.success {
-    background-color: var(--success);
-  }
+const StyledMessage = styled.p`
+  color: ${(props) => props.theme.mainText};
+  // color: #151626;
+  font-size: 14px;
+  font-weight: 500;
+  margin-left: 12px;
+`;
 
-  &.info {
-    background-color: var(--info);
-  }
-
-  &.warning {
-    background-color: var(--warning);
-  }
-
-  &.error {
-    background-color: var(--error);
-  }
+const StyledButton = styled.button`
+  cursor: pointer;
+  border: none;
+  background: none;
+  margin-left: auto;
 `;
 
 const Toast = ({ message, type, id }) => {
-  const { icon, iconColor, progressBarClass } = toastTypes[type];
+  const { icon, iconClass, progressBarClass, color } = toastTypes[type];
   const [dismissed, setDismissed] = useState(false);
   const toast = useToast();
   const progressRef = useRef(null);
-
   const timerID = useRef(null);
 
   const handleDismiss = () => {
@@ -143,7 +145,7 @@ const Toast = ({ message, type, id }) => {
 
   const handleMouseEnter = () => {
     clearTimeout(timerID.current);
-    progressRef.current.style.animationPlayState = 'paused';
+    progressRef.current.style.animationPlayState = "paused";
   };
 
   const handleMouseLeave = () => {
@@ -152,7 +154,7 @@ const Toast = ({ message, type, id }) => {
         progressRef.current.parentElement.offsetWidth) *
       4000;
 
-    progressRef.current.style.animationPlayState = 'running';
+    progressRef.current.style.animationPlayState = "running";
 
     timerID.current = setTimeout(() => {
       handleDismiss();
@@ -170,20 +172,27 @@ const Toast = ({ message, type, id }) => {
   }, []);
 
   return (
-    <ToastContainer
-      className={`toast ${dismissed ? 'toast-dismissed' : ''}`}
+    <StyledToast
+      className={`toast ${dismissed ? "toast-dismissed" : ""}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <ToastIcon iconColor={iconColor}>{icon}</ToastIcon>
-      <ToastMessage>{message}</ToastMessage>
-      <DismissButton onClick={handleDismiss}>
+      <StyledIcon className={iconClass} color={color}>
+        {icon}
+      </StyledIcon>
+      <StyledMessage className="toast-message">{message}</StyledMessage>
+      <StyledButton className="dismiss-btn" onClick={handleDismiss}>
         <IconX size={18} color="#aeb0d7" />
-      </DismissButton>
-      <ToastProgressContainer>
-        <ToastProgressBar ref={progressRef} className={`toast-progress-bar ${progressBarClass}`} />
-      </ToastProgressContainer>
-    </ToastContainer>
+      </StyledButton>
+
+      <StyledProgressBar className="toast-progress">
+        <StyledProgressBarBar
+          ref={progressRef}
+          className={`toast-progress-bar ${progressBarClass}`}
+          color={color}
+        />
+      </StyledProgressBar>
+    </StyledToast>
   );
 };
 

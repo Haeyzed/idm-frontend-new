@@ -1,16 +1,6 @@
 import styled from 'styled-components';
 import Toast from './Toast';
 
-const ToastsContainer = ({ toasts, position = 'top-right' }) => {
-  return (
-    <Container className={`toasts-container ${position}`}>
-      {toasts.map((toast) => (
-        <Toast key={toast.id} {...toast} />
-      ))}
-    </Container>
-  );
-};
-
 const Container = styled.div`
   display: flex;
   flex-direction: column-reverse;
@@ -50,5 +40,15 @@ const Container = styled.div`
     right: 16px;
   }
 `;
+
+const ToastsContainer = ({ toasts, position = 'top-right' }) => {
+  return (
+    <Container className={`toasts-container ${position}`}>
+      {toasts.map((toast) => (
+        <Toast key={toast.id} {...toast} />
+      ))}
+    </Container>
+  );
+};
 
 export default ToastsContainer;
