@@ -173,6 +173,7 @@ const ErrorSpan = styled.span`
   font-size: 12px;
   margin-top: 5px;
   margin-bottom: 5px;
+  white-space: pre-wrap;
 `;
 
 const DragDropFile = ({

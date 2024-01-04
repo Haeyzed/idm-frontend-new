@@ -116,7 +116,6 @@ const StyledProgressBarBar = styled.div`
 
 const StyledMessage = styled.p`
   color: ${(props) => props.theme.mainText};
-  // color: #151626;
   font-size: 14px;
   font-weight: 500;
   margin-left: 12px;
@@ -129,7 +128,7 @@ const StyledButton = styled.button`
   margin-left: auto;
 `;
 
-const Toast = ({ message, type, id }) => {
+const Toast = ({ message, type, id, theme }) => {
   const { icon, iconClass, progressBarClass, color } = toastTypes[type];
   const [dismissed, setDismissed] = useState(false);
   const toast = useToast();
@@ -176,6 +175,7 @@ const Toast = ({ message, type, id }) => {
       className={`toast ${dismissed ? "toast-dismissed" : ""}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      theme={theme}
     >
       <StyledIcon className={iconClass} color={color}>
         {icon}
