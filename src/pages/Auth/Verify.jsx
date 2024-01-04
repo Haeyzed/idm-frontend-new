@@ -1,8 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaEnvelope } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import axiosClient from "../../axiosClient.js";
+import axiosClient, {
+  setHandleGenericErrorCallback,
+  setHandleUnauthorizedErrorCallback,
+  setHandleValidationErrorCallback,
+  setHandleDefaultErrorCallback,
+  setRedirectCallback,
+} from "../../axiosClient";
 import GuestLayout from "../../components/Layouts/GuestLayout";
 import Button from "../../components/common/Button";
 import Card from "../../components/common/Card";
@@ -83,35 +89,33 @@ const Verify = () => {
   };
   const [formData, setFormData] = useState(initialFormData);
 
-  const handleInputChange = (fieldName, value, index) => {
-    if (fieldName === "otp") {
-      setOtpValue((prevOtpValue) => {
-        const newOtpValue = [...prevOtpValue];
-        newOtpValue[index] = value;
-        return newOtpValue;
-      });
-    } else {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        [fieldName]: value,
-      }));
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [fieldName]: "",
-      }));
-    }
+  const handleInputChange = (fieldName, value) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [fieldName]: value,
+    }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [fieldName]: "",
+    }));
   };
 
-  // const handleInputChange = (fieldName, value, index) => {
-  //   setFormData((prevFormData) => ({
-  //     ...prevFormData,
-  //     [fieldName]: value,
-  //   }));
-  //   setErrors((prevErrors) => ({
-  //     ...prevErrors,
-  //     [fieldName]: "",
-  //   }));
-  // };
+  const handleOtpChange = (newValue, index, fieldName) => {
+    const newOtpValue = [...otpValue];
+    newOtpValue[index] = newValue;
+
+    const newErrors = { ...errors };
+
+    if (fieldName === "otp" && !/^[0-9]$/.test(newValue)) {
+      newErrors[fieldName] =
+        "Invalid OTP format. Please enter only numeric values.";
+    } else {
+      newErrors[fieldName] = "";
+    }
+
+    setOtpValue(newOtpValue);
+    setErrors(newErrors);
+  };
 
   const handleLogin = () => {
     navigate("/login");
@@ -136,6 +140,35 @@ const Verify = () => {
     }, 1000);
   };
 
+  useEffect(() => {
+    setRedirectCallback(() => {
+      navigate("/login");
+    });
+  }, [navigate]);
+
+  setHandleGenericErrorCallback((response) => {
+    toast.error(response.data.message || "An error occurred");
+  });
+
+  setHandleUnauthorizedErrorCallback((response) => {
+    toast.error(response.data.message || "Unauthorized. Please log in.");
+  });
+
+  setHandleValidationErrorCallback((response) => {
+    toast.warning(response.data.message || "Validation Error");
+
+    const { errors } = response.data;
+    const stringErrors = {};
+    Object.keys(errors).forEach((key) => {
+      stringErrors[key] = errors[key].join("\n");
+    });
+    setErrors(stringErrors);
+  });
+
+  setHandleDefaultErrorCallback((response) => {
+    toast.error(response.data.message || "An error occurred");
+  });
+
   const handleVerify = async (event) => {
     event.preventDefault();
 
@@ -148,52 +181,21 @@ const Verify = () => {
       setUser(response.data.data);
       setToken(response.data.access_token);
       setFormData(initialFormData);
-      toast.success(response.data.message)
-    } catch (error) {
-      if (error.response?.status === 422) {
-        const { errors, message } = error.response.data;
-        toast.warning(message)
-
-        const stringErrors = {};
-        Object.keys(errors).forEach((key) => {
-          stringErrors[key] = errors[key].join("\n");
-        });
-
-        setErrors(stringErrors);
-      } else if (error.response?.status === 401) {
-        const { message } = error.response.data;
-        toast.error(message)
-      } else {
-        const { message } = error.response.data;
-        toast.error(message)
-      }
+      toast.success(response.data.message);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleResendOTP = async () => {
+  const handleResendOTP = async (event) => {
+    event.preventDefault();
     try {
       setIsSending(true);
 
       const endpoint = "/auth/issue-otp";
       const response = await axiosClient.post(endpoint, formData);
+      toast.success(response.data.message);
       startResendCountdown();
-    } catch (error) {
-      if (error.response?.status === 422) {
-        const { errors } = error.response.data;
-
-        const stringErrors = {};
-        Object.keys(errors).forEach((key) => {
-          stringErrors[key] = errors[key].join("\n");
-        });
-
-        setErrors(stringErrors);
-      } else if (error.response?.status === 401) {
-        // Handle other cases as needed
-      } else {
-        // Handle other cases as needed
-      }
     } finally {
       setIsSending(false);
     }
@@ -229,9 +231,11 @@ const Verify = () => {
           <OTPInput
             name="otp"
             value={otpValue}
-            onChange={handleInputChange}
+            onChange={(newValue, index) =>
+              handleOtpChange(newValue, index, "otp")
+            }
             margin="5px 0 5px 0"
-            error={formData.otp}
+            error={errors.otp}
           />
           <CheckboxContainer>
             <ResetPassword

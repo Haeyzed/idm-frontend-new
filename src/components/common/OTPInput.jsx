@@ -122,7 +122,7 @@ const OTPContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 8px;
-  justify-content: center; /* Center horizontally */
+  justify-content: center;
 `;
 
 const OTPInput = ({
@@ -132,20 +132,11 @@ const OTPInput = ({
   onChange,
   disabled,
   error,
-  setInputError,
   size,
+  margin,
   ...rest
 }) => {
   const inputRefs = Array.from({ length: 6 }, () => useRef(null));
-
-
-  const handlePaste = (e) => {
-    const pastedData = e.clipboardData.getData("text").trim();
-    if (/^[0-9]*$/.test(pastedData) && pastedData.length === 6) {
-      const newOTPValue = pastedData.split("");
-      onChange(newOTPValue.join(""));
-    }
-  };
 
   const handleInputChange = (e, index) => {
     if (onChange) {
@@ -153,15 +144,31 @@ const OTPInput = ({
       onChange(newValue, index);
   
       if (newValue !== "" && index < inputRefs.length - 1) {
-        inputRefs[index + 1].current.focus();
+        setTimeout(() => {
+          inputRefs[index + 1].current.focus();
+        }, 0);
       }
   
       if (e.target.selectionStart === 0 && index > 0) {
-        inputRefs[index - 1].current.focus();
+        setTimeout(() => {
+          inputRefs[index - 1].current.focus();
+        }, 0);
       }
     }
+  };  
+
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData("text").trim();
+
+    if (/^[0-9]*$/.test(pastedData) && pastedData.length === 6) {
+      const newOTPValue = pastedData.split("");
+      newOTPValue.forEach((value, index) => {
+        const currentIndex = Math.min(index, inputRefs.length - 1);
+        handleInputChange({ target: { value } }, currentIndex);
+      });
+    }
   };
-  
 
   return (
     <>
@@ -176,13 +183,13 @@ const OTPInput = ({
             value={value[index] || ""}
             onChange={(e) => handleInputChange(e, index)}
             maxLength="1"
-            onPaste={handlePaste}
             pattern="[0-9]*"
             ref={inputRefs[index]}
             disabled={disabled}
             size={size}
             error={error}
-            {...rest}
+            margin={margin}
+            onPaste={handlePaste}
           />
         ))}
       </OTPContainer>
@@ -197,7 +204,7 @@ OTPInput.propTypes = {
   onChange: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
   size: PropTypes.oneOf(["small", "large"]),
-  setInputError: PropTypes.func,
+  margin: PropTypes.string,
 };
 
 export default OTPInput;
