@@ -1,4 +1,3 @@
-// LoadingSpinner.jsx
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
@@ -17,7 +16,7 @@ const StyledLoadingSpinner = styled.div`
 `;
 
 const LoadingSpinner = () => (
-  <StyledLoadingSpinner />
+  <StyledLoadingSpinner id="preloader-spinner" />
 );
 
 export default LoadingSpinner;

@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
+import HorizontalLoadingSpinner from "./HorizontalLoadingSpinner";
 
 const StyledButton = styled.button`
   width: 100%;
@@ -16,7 +17,7 @@ const StyledButton = styled.button`
   border: none;
   border-radius: 10px;
   font-family: inherit;
-  cursor: ${(props) => (props.isloading ? "not-allowed" : "pointer")};
+  cursor: ${(props) => (props.isLoading ? "not-allowed" : "pointer")};
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
 
   &:hover {
@@ -30,7 +31,7 @@ const StyledButton = styled.button`
   }
 
   ${(props) =>
-    props.isloading &&
+    props.isLoading &&
     css`
       cursor: not-allowed;
       opacity: 0.8;
@@ -115,7 +116,7 @@ const StyledButton = styled.button`
     `}
 
   ${(props) =>
-    props.isloading &&
+    props.isLoading &&
     css`
       cursor: not-allowed;
       opacity: 0.8;
@@ -128,19 +129,27 @@ const Button = ({
   type,
   className,
   size,
-  isloading,
+  isLoading,
   margin,
 }) => (
-  <StyledButton
-    onClick={onClick}
-    type={type || "button"}
-    className={className}
-    size={size}
-    disabled={isloading}
-    margin={margin}
-  >
-    {isloading ? "Loading..." : children}
-  </StyledButton>
+  <>
+    {!isLoading && (
+      <StyledButton
+        onClick={onClick}
+        type={type || "button"}
+        className={className}
+        size={size}
+        disabled={isLoading}
+        margin={margin}
+        isLoading={isLoading}
+      >
+        {children}
+      </StyledButton>
+    )}
+    {isLoading && (
+      <HorizontalLoadingSpinner margin="21px 0 21px 0" progress={50} />
+    )}
+  </>
 );
 
 Button.propTypes = {
@@ -149,7 +158,7 @@ Button.propTypes = {
   type: PropTypes.string,
   className: PropTypes.string,
   size: PropTypes.oneOf(["small", "large"]),
-  isloading: PropTypes.bool,
+  isLoading: PropTypes.bool,
   margin: PropTypes.string,
 };
 

@@ -61,7 +61,7 @@ const Submit = (props) => {
         type="submit"
         className="primary"
         margin="5px 0 5px 0"
-        isloading={isLoading}
+        isLoading={isLoading}
         onClick={handleSubmit}
       >
         Submit

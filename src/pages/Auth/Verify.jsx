@@ -253,7 +253,7 @@ const Verify = () => {
           <Button
             type="submit"
             className="primary"
-            isloading={isLoading}
+            isLoading={isLoading}
             margin="5px 0 5px 0"
           >
             Verify

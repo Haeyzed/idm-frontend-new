@@ -10,6 +10,7 @@ import OAuthClients from "./pages/Oauth/OAuthClients";
 import UserForm from "./pages/Users/UserForm";
 import Users from "./pages/users/Users";
 import Unlock from "./pages/Auth/Unlock";
+import NotFound from "./pages/NotFound";
 
 const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
@@ -22,6 +23,7 @@ const router = createBrowserRouter([
   { path: "/users/create", element: <UserForm /> },
   { path: "/oauth-clients", element: <OAuthClients /> },
   { path: "/unlock", element: <Unlock /> },
+  { path: "*", element: <NotFound /> },
 ]);
 
 export default router;

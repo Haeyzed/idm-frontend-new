@@ -57,7 +57,7 @@ const DefaultLayout = ({ children }) => {
 
       timeout = setTimeout(() => {
         handleInactivity();
-      }, 60000);
+      }, 600000);
     };
 
     const events = ["mousemove", "keydown", "mousedown", "touchstart"];
@@ -114,7 +114,7 @@ const DefaultLayout = ({ children }) => {
       <StyledDefaultLayout theme={theme}>
         <Sidebar onLogout={onLogout} />
         <ContentContainer>
-          <Header user={user} onLogout={onLogout} />
+          {/* <Header user={user} onLogout={onLogout} /> */}
           <Main>{children}</Main>
         </ContentContainer>
       </StyledDefaultLayout>

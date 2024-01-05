@@ -5,10 +5,10 @@ import styled from "styled-components";
 import LogoLightImage from "../../assets/images/logo-sm-dark.png";
 import LogoDarkImage from "../../assets/images/logo-sm-light.png";
 import axiosClient, {
+  setHandleDefaultErrorCallback,
   setHandleGenericErrorCallback,
   setHandleUnauthorizedErrorCallback,
   setHandleValidationErrorCallback,
-  setHandleDefaultErrorCallback,
   setRedirectCallback,
 } from "../../axiosClient";
 import GuestLayout from "../../components/Layouts/GuestLayout";
@@ -227,11 +227,10 @@ const Login = () => {
               Reset Password
             </ResetPassword>
           </CheckboxContainer>
-          {/* <HorizontalLoadingSpinner /> */}
           <Button
             type="submit"
             className="primary"
-            isloading={isLoading}
+            isLoading={isLoading}
             margin="5px 0 5px 0"
           >
             Login

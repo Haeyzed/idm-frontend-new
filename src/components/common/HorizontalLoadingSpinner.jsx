@@ -7,8 +7,12 @@ const spinAnimation = keyframes`
 `;
 
 const StyledHorizontalLoadingSpinner = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   height: 10px;
+  margin: ${(props) => props.margin || "0 0 0 0"};
   background-color: ${(props) => props.theme.progressBarBackground};
   border-radius: 5px;
   overflow: hidden;
@@ -16,15 +20,15 @@ const StyledHorizontalLoadingSpinner = styled.div`
 
 const StyledHorizontalLoadingSpinnerFill = styled.div`
   height: 100%;
-  width: ${(props) => props.progress}%;
+  width: ${(props) => props.$progress}%; // Use $progress instead of progress
   background-color: ${(props) => props.theme.progressBarFill};
   border-radius: 5px;
   animation: ${spinAnimation} 1s linear infinite;
 `;
 
-const HorizontalLoadingSpinner = ({ progress }) => (
-  <StyledHorizontalLoadingSpinner>
-    <StyledHorizontalLoadingSpinnerFill progress={progress} />
+const HorizontalLoadingSpinner = ({ progress, margin }) => (
+  <StyledHorizontalLoadingSpinner margin={margin}>
+    <StyledHorizontalLoadingSpinnerFill $progress={progress} />
   </StyledHorizontalLoadingSpinner>
 );
 

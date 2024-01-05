@@ -44,6 +44,9 @@ const handleErrorResponse = (error) => {
       case 401:
         handleUnauthorizedErrorCallback(response);
         if (redirectCallback) {
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("user");
+          localStorage.removeItem("inactive");
           redirectCallback();
         }
         break;

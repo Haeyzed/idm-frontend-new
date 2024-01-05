@@ -23,17 +23,22 @@ export const lightTheme = {
   secondaryButtonText: "#fff",
   secondaryButtonHoverBackground: "#5a6268",
 
-  dangerButtonBackground: "red",
+  dangerButtonBackground: "ef4444",
   dangerButtonText: "#fff",
   dangerButtonHoverBackground: "#c0392b",
 
-  successButtonBackground: "#2ecc71",
+  successButtonBackground: "#22c55e",
   successButtonText: "#fff",
   successButtonHoverBackground: "#27ae60",
 
-  warningButtonBackground: "#f39c12",
+  warningButtonBackground: "#f97316",
   warningButtonText: "#fff",
   warningButtonHoverBackground: "#d35400",
+
+  infoButtonBackground: "#3b82f6",
+  infoButtonText: "#fff",
+  infoButtonHoverBackground: "#d35400",
+
   inputBorder: "#f2f2f2",
   inputText: "#000",
   inputBackground: "#f2f2f2",
@@ -132,17 +137,22 @@ export const darkTheme = {
   secondaryButtonText: "#fff",
   secondaryButtonHoverBackground: "#5a6268",
 
-  dangerButtonBackground: "red",
+  dangerButtonBackground: "ef4444",
   dangerButtonText: "#fff",
   dangerButtonHoverBackground: "#c0392b",
 
-  successButtonBackground: "#2ecc71",
+  successButtonBackground: "#22c55e",
   successButtonText: "#fff",
   successButtonHoverBackground: "#27ae60",
 
-  warningButtonBackground: "#f39c12",
+  warningButtonBackground: "#f97316",
   warningButtonText: "#fff",
   warningButtonHoverBackground: "#d35400",
+
+  infoButtonBackground: "#3b82f6",
+  infoButtonText: "#fff",
+  infoButtonHoverBackground: "#d35400",
+
   inputBorder: "#1a1a1a",
   inputText: "#fff",
   inputBackground: "#1a1a1a",
