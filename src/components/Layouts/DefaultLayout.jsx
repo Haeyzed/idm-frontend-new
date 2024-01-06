@@ -12,7 +12,7 @@ import Sidebar from "./Sidebar";
 
 const StyledDefaultLayout = styled.div`
   display: flex;
-  min-height: 100vh;
+  // min-height: 100vh;
 `;
 
 const ContentContainer = styled.div`
@@ -22,9 +22,10 @@ const ContentContainer = styled.div`
   overflow: hidden;
 `;
 
-const DefaultLayout = ({ children }) => {
+const DefaultLayout = ({ children, title }) => {
   const { toggleTheme, theme } = useTheme();
   const toast = useToast();
+  const [isLoading, setIsLoading] = useState(false);
   const { user, token, setUser, setToken } = useStateContext();
   const navigate = useNavigate();
 
@@ -37,6 +38,7 @@ const DefaultLayout = ({ children }) => {
   };
 
   const [inactive, setInactive] = useState(getStoredInactiveState());
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
 
   const handleUserActivity = () => {
     setInactive(false);
@@ -90,31 +92,43 @@ const DefaultLayout = ({ children }) => {
     return <Navigate to="/login" />;
   }
 
-  const onLogout = (ev) => {
-    ev.preventDefault();
+  const onLogout = async (event) => {
+    event.preventDefault();
 
-    axiosClient.post("/auth/logout").then((response) => {
+    try {
+      setIsLoading(true);
+
+      const endpoint = "/auth/logout";
+      const response = await axiosClient.post(endpoint);
+
       setUser({});
       setToken(null);
       setInactive(false);
       setStoredInactiveState(false);
       toast.success(response.data.message);
-    });
+    } finally {
+      setIsLoading(false);
+    }
   };
-
-  // useEffect(() => {
-  //   axiosClient.get("/auth/user").then(({ data }) => {
-  //     setUser(data.data);
-  //   });
-  // }, []);
 
   return (
     <>
       <GlobalStyles />
       <StyledDefaultLayout theme={theme}>
-        <Sidebar onLogout={onLogout} />
+        <Sidebar
+          onLogout={onLogout}
+          collapsed={sidebarCollapsed}
+          onSidebarToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+        />
         <ContentContainer>
-          {/* <Header user={user} onLogout={onLogout} /> */}
+          <Header
+            title={title}
+            toggleTheme={toggleTheme}
+            user={user}
+            onLogout={onLogout}
+            isLoading={isLoading}
+            onSidebarToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+          />
           <Main>{children}</Main>
         </ContentContainer>
       </StyledDefaultLayout>
