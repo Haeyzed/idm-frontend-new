@@ -1,10 +1,15 @@
-import React from "react";
+// Header.js
+import React, { useState } from "react";
 import styled from "styled-components";
 import {
   FaRegMoon,
   FaSignOutAlt,
   FaBars,
   FaSun,
+  FaBell,
+  FaEnvelope,
+  FaSearch,
+  FaEnvelopeOpen,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import HorizontalLoadingSpinner from "../common/HorizontalLoadingSpinner";
@@ -14,9 +19,9 @@ const HeaderContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  // background-color: ${(props) => props.theme.headerBackground};
   color: ${(props) => props.theme.headerText};
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: flex-start;
@@ -31,8 +36,8 @@ const FlexContainer = styled.div`
 
 const LeftContainer = styled(FlexContainer)`
   @media (max-width: 768px) {
-    flex-direction: row; /* Keep the items in the same row */
-    align-items: center; /* Center the items horizontally */
+    flex-direction: row;
+    align-items: center;
     margin-bottom: 10px;
   }
 `;
@@ -41,6 +46,14 @@ const Title = styled.h2`
   font-weight: bold;
   font-size: 1.5rem;
   margin: 0;
+
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1rem;
+  }
 `;
 
 const RightContainer = styled(FlexContainer)`
@@ -64,12 +77,20 @@ const UserImage = styled.img`
 
 const UserName = styled.div`
   font-size: 1rem;
+
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.7rem;
+  }
 `;
 
 const Icon = styled.div`
   cursor: pointer;
   display: flex;
-  align-items: center; /* Center the icon vertically */
+  align-items: center;
 `;
 
 const Header = ({
@@ -95,11 +116,13 @@ const Header = ({
     navigate("/profile");
   };
 
+  const [isEnvelopeOpen, setIsEnvelopeOpen] = useState(false);
+
   return (
     <HeaderContainer>
       <LeftContainer>
         <Icon onClick={onSidebarToggle}>
-          <FaBars size={20} />
+          <FaBars size={18} />
         </Icon>
         <Title>{title}</Title>
       </LeftContainer>
@@ -108,12 +131,19 @@ const Header = ({
           <UserImage src={user.image} alt="User" />
           <UserName>{user.name}</UserName>
         </UserInfoContainer>
-        <Icon onClick={toggleTheme}>
-          {renderThemeIcon()}
+        <Icon>
+          <FaSearch size={18} />
         </Icon>
+        <Icon>
+          <FaBell size={18} />
+        </Icon>
+        <Icon onClick={() => setIsEnvelopeOpen(!isEnvelopeOpen)}>
+          {isEnvelopeOpen ? <FaEnvelopeOpen size={18} /> : <FaEnvelope size={18} />}
+        </Icon>
+        <Icon onClick={toggleTheme}>{renderThemeIcon()}</Icon>
         {!isLoading && (
           <Icon onClick={onLogout}>
-            <FaSignOutAlt size={20} />
+            <FaSignOutAlt size={18} />
           </Icon>
         )}
         {isLoading && (

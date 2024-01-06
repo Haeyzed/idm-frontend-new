@@ -15,7 +15,6 @@ const SidebarContainer = styled.nav`
   position: relative;
   top: 0;
   bottom: 0;
-  height: 100vh;
   left: 0;
   background-color: ${(props) => props.theme.cardBackground};
   width: ${({ collapsed }) => (collapsed ? "60px" : "200px")};
@@ -25,9 +24,10 @@ const SidebarContainer = styled.nav`
   transition: width 0.3s ease;
 
   @media (max-width: 768px) {
-    width: ${({ collapsed }) => (collapsed ? "0" : "200px")};
+    width: ${({ collapsed }) => (collapsed ? "0" : "0")};
   }
 `;
+
 
 const LogoContainer = styled.div`
   text-align: center;
@@ -40,7 +40,7 @@ const Logo = styled.img`
   height: auto;
 `;
 
-const Sidebar = ({ onLogout, onSidebarToggle }) => {
+const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(getStoredCollapseState());
   const { theme } = useTheme();
   const storedValue = localStorage.getItem("theme");

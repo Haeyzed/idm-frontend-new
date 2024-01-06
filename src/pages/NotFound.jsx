@@ -27,7 +27,7 @@ const Message = styled.p`
 
 const Illustration = styled.img`
   width: 100%;
-  max-width: 400px;
+  max-width: 200px;
   margin-bottom: 40px;
 `;
 
@@ -45,7 +45,7 @@ const GoBackLink = styled(Link)`
 
 const NotFound = () => {
   return (
-    <DefaultLayout>
+    <DefaultLayout title="404 - Not Found">
       <NotFoundContainer>
         <Title>404 - Not Found</Title>
         <Illustration src={notFoundIllustration} alt="Not Found Illustration" />

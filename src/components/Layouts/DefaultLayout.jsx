@@ -1,3 +1,4 @@
+// DefaultLayout.js
 import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -12,7 +13,6 @@ import Sidebar from "./Sidebar";
 
 const StyledDefaultLayout = styled.div`
   display: flex;
-  // min-height: 100vh;
 `;
 
 const ContentContainer = styled.div`
