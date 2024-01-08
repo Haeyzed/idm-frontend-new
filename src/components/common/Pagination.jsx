@@ -38,18 +38,39 @@ const RoundPageLink = styled.a`
 
 const Pagination = ({ links, meta, onPageChange }) => {
   const renderPaginationLinks = () => {
+    const MAX_PAGES_DISPLAYED = 5; // Adjust the maximum number of pages displayed
+
     const pages = [];
-    for (let i = 1; i <= meta.last_page; i++) {
+    const totalPages = meta.last_page;
+
+    // Use the updated current_page directly
+    const currentPage = meta.current_page;
+
+    // Determine the range of pages to display
+    let startPage = Math.max(
+      1,
+      currentPage - Math.floor(MAX_PAGES_DISPLAYED / 2)
+    );
+    let endPage = Math.min(totalPages, startPage + MAX_PAGES_DISPLAYED - 1);
+
+    // Adjust the startPage and endPage if the total pages are less than MAX_PAGES_DISPLAYED
+    if (totalPages <= MAX_PAGES_DISPLAYED) {
+      startPage = 1;
+      endPage = totalPages;
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
       pages.push(
         <RoundPageLink
           key={i}
-          active={i === meta.current_page}
+          active={i === currentPage}
           onClick={() => onPageChange(i)}
         >
           {i}
         </RoundPageLink>
       );
     }
+
     return pages;
   };
 

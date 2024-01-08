@@ -1,21 +1,17 @@
 import React, { useEffect, useState } from "react";
 import {
   FiCalendar,
-  FiClock,
   FiColumns,
   FiEdit,
   FiEye,
-  FiFile,
   FiFileText,
-  FiFilter,
   FiMail,
   FiMap,
   FiPhone,
-  FiSearch,
   FiTrash2,
   FiUser,
   FiUserPlus,
-  FiUsers,
+  FiUsers
 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -30,15 +26,14 @@ import DefaultLayout from "../../components/Layouts/DefaultLayout";
 import Button from "../../components/common/Button";
 import Card from "../../components/common/Card";
 import DragDropFile from "../../components/common/DragDropFile";
+import Filter from "../../components/common/Filter";
 import Form from "../../components/common/Form";
 import HorizontalLoadingSpinner from "../../components/common/HorizontalLoadingSpinner";
 import Input from "../../components/common/Input";
+import Modal from "../../components/common/Modal";
+import Pagination from "../../components/common/Pagination";
 import Select from "../../components/common/Select";
 import { useToast } from "../../utils/useToast";
-import Filter from "../../components/common/Filter";
-import Pagination from "../../components/common/Pagination";
-import Modal from "../../components/common/Modal";
-import { FaFileExport } from "react-icons/fa";
 
 const MainContainer = styled.div`
   background-color: ${(props) => props.theme.mainBackground};
@@ -75,7 +70,6 @@ const RightSection = styled.div`
   box-sizing: border-box;
 `;
 
-// Details
 const DetailsInfo = styled.div`
   display: flex;
   flex-direction: column;
