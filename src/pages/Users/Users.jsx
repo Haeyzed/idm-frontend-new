@@ -398,6 +398,9 @@ const Users = () => {
       const response = await axiosClient.post("/user/export", exportData);
 
       toast.success(response.data.message);
+    } catch (error) {
+      setIsModalOpen(true);
+      setIsExportLoading(false);
     } finally {
       setIsModalOpen(false);
       setIsExportLoading(false);
@@ -423,7 +426,10 @@ const Users = () => {
         searchable={true}
         onChange={(fieldName, newValue) => {
           handleSelectChange(fieldName, newValue);
-          setData((prevData) => ({ ...prevData, columns: newValue.map((column) => column.value) }));
+          setData((prevData) => ({
+            ...prevData,
+            columns: newValue.map((column) => column.value),
+          }));
         }}
         align="left"
         margin="5px 0 5px 0"
@@ -504,9 +510,7 @@ const Users = () => {
 
     if (userToEdit) {
       setFormData({
-        title: userToEdit
-          ? { value: userToEdit.title, label: userToEdit.title }
-          : null,
+        title: userToEdit.title,
         name: userToEdit.name,
         username: userToEdit.username,
         email: userToEdit.email,
