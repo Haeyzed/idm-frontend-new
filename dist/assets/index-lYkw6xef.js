@@ -2127,6 +2127,7 @@ Error generating stack: `+i.message+`
   position: relative;
   top: 0;
   bottom: 0;
+  height: 100vh;
   left: 0;
   background-color: ${e=>e.theme.cardBackground};
   width: ${({collapsed:e})=>e?"60px":"200px"};

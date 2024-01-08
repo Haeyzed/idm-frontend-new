@@ -62,7 +62,7 @@ const StyledInput = styled.input`
     props.size === "small" &&
     css`
       font-size: 12px;
-      padding: 8px ${(props) => (props.lefticon ? "26px" : "8px")} 8px ${(props) => (props.lefticon ? "26px" : "8px")};
+      padding: 10px ${(props) => (props.lefticon ? "33px" : "10px")} 10px ${(props) => (props.lefticon ? "33px" : "10px")};
     `}
 
   ${(props) =>

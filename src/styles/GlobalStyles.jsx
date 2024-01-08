@@ -11,10 +11,9 @@ const GlobalStyles = createGlobalStyle`
     font-family: 'Raleway', sans-serif;
     background-color: ${(props) => props.theme.mainBackground};
     color: ${(props) => props.theme.mainText};
-    overflow-x: hidden; /* Prevent horizontal scroll */
+    overflow-x: hidden;
   }
 
-  /* Customize scrollbar styles for WebKit browsers (e.g., Chrome, Safari) */
   ::-webkit-scrollbar {
     width: 12px;
   }

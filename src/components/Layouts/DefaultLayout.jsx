@@ -1,4 +1,3 @@
-// DefaultLayout.js
 import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -13,6 +12,7 @@ import Sidebar from "./Sidebar";
 
 const StyledDefaultLayout = styled.div`
   display: flex;
+  height: 100%;
 `;
 
 const ContentContainer = styled.div`
@@ -59,7 +59,7 @@ const DefaultLayout = ({ children, title }) => {
 
       timeout = setTimeout(() => {
         handleInactivity();
-      }, 600000);
+      }, 999999999);
     };
 
     const events = ["mousemove", "keydown", "mousedown", "touchstart"];
@@ -118,16 +118,12 @@ const DefaultLayout = ({ children, title }) => {
         <Sidebar
           onLogout={onLogout}
           collapsed={sidebarCollapsed}
-          onSidebarToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+          user={user}
+          isLoading={isLoading}
         />
         <ContentContainer>
           <Header
             title={title}
-            toggleTheme={toggleTheme}
-            user={user}
-            onLogout={onLogout}
-            isLoading={isLoading}
-            onSidebarToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
           />
           <Main>{children}</Main>
         </ContentContainer>

@@ -1,5 +1,6 @@
 import React from "react";
-import { FaEnvelope, FaUser, FaUserShield } from "react-icons/fa";
+import { FaEnvelope, FaUser } from "react-icons/fa";
+import { FiMail, FiUser, FiUserPlus } from "react-icons/fi";
 import Button from "../../components/common/Button";
 import Form from "../../components/common/Form";
 import Input from "../../components/common/Input";
@@ -18,7 +19,7 @@ const Step1 = (props) => {
       <Select
         name="title"
         placeHolder="Select a title"
-        lefticon={<FaUserShield />}
+        lefticon={<FiUserPlus />}
         options={titleOptions}
         multiple={false}
         searchable={true}
@@ -31,7 +32,7 @@ const Step1 = (props) => {
       />
       <Input
         name="name"
-        lefticon={<FaUser />}
+        lefticon={<FiUser />}
         type="text"
         placeholder="Enter your name"
         value={formData.name}
@@ -43,7 +44,7 @@ const Step1 = (props) => {
       />
       <Input
         name="email"
-        lefticon={<FaEnvelope />}
+        lefticon={<FiMail />}
         type="email"
         placeholder="Enter your email"
         value={formData.email}
@@ -55,7 +56,7 @@ const Step1 = (props) => {
       />
       <Input
         name="username"
-        lefticon={<FaUser />}
+        lefticon={<FiUser />}
         type="username"
         placeholder="Enter your username"
         value={formData.username}

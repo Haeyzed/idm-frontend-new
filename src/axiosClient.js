@@ -43,10 +43,10 @@ const handleErrorResponse = (error) => {
     switch (response.status) {
       case 401:
         handleUnauthorizedErrorCallback(response);
-        if (redirectCallback) {
           localStorage.removeItem("access_token");
           localStorage.removeItem("user");
           localStorage.removeItem("inactive");
+        if (redirectCallback) {
           redirectCallback();
         }
         break;

@@ -1,19 +1,17 @@
 import React from "react";
 import styled from "styled-components";
 
-const StyledMain = styled.div`
+const MainContainer = styled.div`
+  padding: 0 20px 20px 20px;
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 16px;
+  overflow: auto;
+  height: 100%;
   background-color: ${(props) => props.theme.mainBackground};
   color: ${(props) => props.theme.mainText};
-  min-height: 0;
-  overflow-y: auto;
 `;
 
 const Main = ({ children }) => {
-  return <StyledMain>{children}</StyledMain>;
+  return <MainContainer>{children}</MainContainer>;
 };
 
 export default Main;

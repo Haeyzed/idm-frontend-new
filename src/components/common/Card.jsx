@@ -22,8 +22,7 @@ const StyledCard = styled.div`
   border-radius: 10px;
   position: relative;
   z-index: 1;
-  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.1);
-  animation: ${fadeInDown} 0.3s both; /* Apply the fadeInDown animation */
+  animation: ${fadeInDown} 0.3s both;
 `;
 
 const Card = ({ children, width, maxwidth }) => (

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaMap, FaPhone, FaTransgenderAlt } from "react-icons/fa";
+import { FiMap, FiPhone, FiUsers } from "react-icons/fi";
 import axiosClient from "../../axiosClient";
 import Button from "../../components/common/Button";
 import Form from "../../components/common/Form";
@@ -71,7 +71,7 @@ const Step2 = (props) => {
     <Form>
       <Input
         name="phone_number"
-        lefticon={<FaPhone />}
+        lefticon={<FiPhone />}
         type="tel"
         placeholder="Enter your phone number"
         value={formData.phone_number}
@@ -84,7 +84,7 @@ const Step2 = (props) => {
       <Select
         name="gender"
         placeHolder="Select a gender"
-        lefticon={<FaTransgenderAlt />}
+        lefticon={<FiUsers />}
         options={genderOptions}
         multiple={false}
         searchable={true}
@@ -98,7 +98,7 @@ const Step2 = (props) => {
       <Select
         name="country_id"
         placeHolder="Select a country"
-        lefticon={<FaMap />}
+        lefticon={<FiMap />}
         options={countryOptions}
         multiple={false}
         searchable={true}
@@ -113,7 +113,7 @@ const Step2 = (props) => {
       <Select
         name="state_id"
         placeHolder="Select a state"
-        lefticon={<FaMap />}
+        lefticon={<FiMap />}
         options={stateOptions}
         multiple={false}
         searchable={true}
@@ -128,7 +128,7 @@ const Step2 = (props) => {
       <Select
         name="city_id"
         placeHolder="Select a city"
-        lefticon={<FaMap />}
+        lefticon={<FiMap />}
         options={cityOptions}
         multiple={false}
         searchable={true}

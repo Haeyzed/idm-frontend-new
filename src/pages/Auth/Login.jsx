@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaEnvelope, FaLock } from "react-icons/fa";
+import { FiLock, FiMail } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import LogoLightImage from "../../assets/images/logo-sm-dark.png";
@@ -190,7 +190,7 @@ const Login = () => {
         <Form onSubmit={handleLogin}>
           <Input
             name="email"
-            lefticon={<FaEnvelope />}
+            lefticon={<FiMail />}
             type="email"
             placeholder="Enter your email"
             value={formData.email}
@@ -202,7 +202,7 @@ const Login = () => {
           />
           <Input
             name="password"
-            lefticon={<FaLock />}
+            lefticon={<FiLock />}
             type="password"
             placeholder="Enter your password"
             showPasswordToggle

@@ -1,5 +1,6 @@
 import React from "react";
 import { FaLock } from "react-icons/fa";
+import { FiLock } from "react-icons/fi";
 import Button from "../../components/common/Button";
 import DragDropFile from "../../components/common/DragDropFile";
 import Form from "../../components/common/Form";
@@ -26,7 +27,7 @@ const Step3 = (props) => {
       />
       <Input
         name="password"
-        lefticon={<FaLock />}
+        lefticon={<FiLock />}
         type="password"
         placeholder="Enter your password"
         showPasswordToggle
@@ -39,7 +40,7 @@ const Step3 = (props) => {
       />
       <Input
         name="password_confirmation"
-        lefticon={<FaLock />}
+        lefticon={<FiLock />}
         type="password"
         placeholder="Enter your password confirmation"
         showPasswordToggle

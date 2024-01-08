@@ -8,23 +8,11 @@ const DashboardContainer = styled.div`
   width: 100%;
 `;
 
-const MainSection = styled.div`
-  display: flex;
-  width: 100%;
-`;
-
-const Main = styled.div`
-  display: flex;
-  margin-top: 20px;
-`;
-
 const Dashboard = () => {
   return (
     <DefaultLayout title="Dashboard">
       <DashboardContainer>
-        <MainSection>
-          <Main></Main>
-        </MainSection>
+        
       </DashboardContainer>
     </DefaultLayout>
   );
